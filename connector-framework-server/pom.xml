@@ -3,6 +3,7 @@
  DO NOT REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
  Copyright (c) 2010-2015 ForgeRock AS. All rights reserved.
+ Portions Copyright 2017 Wren Security.
 
  The contents of this file are subject to the terms
  of the Common Development and Distribution License
@@ -32,9 +33,9 @@
 
     <artifactId>connector-framework-server</artifactId>
     <packaging>bundle</packaging>
-    <name>OpenICF Framework - Server</name>
+    <name>Wren:ICF - Framework - Server Core</name>
     <description>
-        
+        Provides Connectors with the ability to run a Connector as a standalone server.
     </description>
 
     <properties>
@@ -50,21 +51,25 @@
             <artifactId>connector-framework-internal</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.forgerock.openicf.framework</groupId>
             <artifactId>connector-framework-rpc</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.forgerock.openicf.framework</groupId>
             <artifactId>connector-framework-protobuf</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.forgerock.commons</groupId>
             <artifactId>forgerock-util</artifactId>
             <version>20.1.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.forgerock.commons.guava</groupId>
             <artifactId>forgerock-guava-collect</artifactId>
@@ -76,11 +81,13 @@
             <artifactId>grizzly-framework</artifactId>
             <version>${grizzly.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.glassfish.grizzly</groupId>
             <artifactId>grizzly-http-servlet</artifactId>
             <version>${grizzly.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.glassfish.grizzly</groupId>
             <artifactId>grizzly-websockets</artifactId>
@@ -114,8 +121,6 @@
             <version>${slf4j.version}</version>
             <scope>provided</scope>
         </dependency>
-        
-
 
         <!-- Test Dependencies -->
         <dependency>
@@ -123,31 +128,34 @@
             <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
             <version>1.4</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>${groovy.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.forgerock.openicf.framework</groupId>
             <artifactId>testbundlev1</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>io.reactivex</groupId>
             <artifactId>rxjava</artifactId>
             <version>1.0.14</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -158,19 +166,23 @@
             -->
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
+
                 <executions>
                     <execution>
                         <id>build-test-jar</id>
+
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.forgerock.openicf.framework.osgi.internal.Activator</Bundle-Activator>

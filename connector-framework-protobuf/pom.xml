@@ -3,6 +3,7 @@
  DO NOT REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
  Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ Portions Copyright 2017 Wren Security.
 
  The contents of this file are subject to the terms
  of the Common Development and Distribution License
@@ -23,18 +24,22 @@
  "Portions Copyrighted [year] [name of copyright owner]"
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>framework</artifactId>
         <groupId>org.forgerock.openicf.framework</groupId>
         <version>1.5.1.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>connector-framework-protobuf</artifactId>
     <packaging>bundle</packaging>
-    <name>OpenICF Framework - Protocol Buffer Messages</name>
-    <description>
 
+    <name>Wren:ICF - Framework - Protocol Buffer Messages</name>
+    <description>
+        This module defines the structure of messages Wren:ICF exchanges over the highly efficient
+        Google Protobuf binary format with Connectors written in other languages (including
+        .NET).
     </description>
 
     <properties>
@@ -59,26 +64,32 @@
                 <directory>src/main/protobuf</directory>
             </resource>
         </resources>
+
         <plugins>
             <plugin>
                 <groupId>com.github.os72</groupId>
                 <artifactId>protoc-jar-maven-plugin</artifactId>
                 <version>3.0.0-a3</version>
+
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
+
                         <goals>
                             <goal>run</goal>
                         </goals>
+
                         <configuration>
                             <protocVersion>3.0.0</protocVersion>
                             <addSources>main</addSources>
+
                             <includeDirectories>
                                 <include>src/main/java</include>
                             </includeDirectories>
                         </configuration>
                     </execution>
                 </executions>
+
                 <dependencies>
                     <dependency>
                         <groupId>com.github.os72</groupId>
