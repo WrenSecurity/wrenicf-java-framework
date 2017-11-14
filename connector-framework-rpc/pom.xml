@@ -3,6 +3,7 @@
  DO NOT REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
  Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ Portions Copyright 2017 Wren Security.
 
  The contents of this file are subject to the terms
  of the Common Development and Distribution License
@@ -23,18 +24,21 @@
  "Portions Copyrighted [year] [name of copyright owner]"
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>framework</artifactId>
         <groupId>org.forgerock.openicf.framework</groupId>
         <version>1.5.0.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>connector-framework-rpc</artifactId>
     <packaging>bundle</packaging>
-    <name>OpenICF Framework - Remote Procedure Call API</name>
-    <description>
 
+    <name>Wren:ICF - Framework - Remote Procedure Call API</name>
+    <description>
+        This module provides common code for interfacing with identity stores that communicate via
+        Remote Procedure Calls.
     </description>
 
     <properties>
@@ -44,9 +48,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-
     <dependencies>
-
         <dependency>
             <groupId>org.forgerock.commons</groupId>
             <artifactId>forgerock-util</artifactId>
@@ -59,12 +61,14 @@
             <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
             <version>1.4</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -72,12 +76,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+
                 <configuration>
                     <instructions>
                     </instructions>

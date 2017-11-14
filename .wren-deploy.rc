@@ -1,0 +1,3 @@
+export MAVEN_PACKAGE="openicf-java-framework"
+export BINTRAY_PACKAGE="wrenicf-java-framework"
+export JFROG_PACKAGE="org/forgerock/openicf/framework"
