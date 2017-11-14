@@ -3,6 +3,7 @@
  DO NOT REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
  Copyright (c) 2010-2015 ForgeRock AS. All rights reserved.
+ Portions Copyright 2017 Wren Security.
 
  The contents of this file are subject to the terms
  of the Common Development and Distribution License
@@ -24,17 +25,21 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.forgerock.openicf.framework</groupId>
         <artifactId>framework</artifactId>
         <version>1.5.2.0</version>
     </parent>
+
     <artifactId>connector-framework</artifactId>
     <packaging>bundle</packaging>
-    <name>OpenICF Framework</name>
+
+    <name>Wren:ICF - Framework</name>
     <description>
-        The IdentityConnectors framework provides a container to separate the Connector bundle from the application.
-        The framework provides many common features that developers would otherwise need to implement on their own.
+        The Identity Connectors framework defines a common interface and shared code that simplifies
+        each Connector bundle and allows it to operate with the same code across several versions of
+        the same identity applications.
     </description>
 
     <dependencies>
@@ -43,17 +48,13 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
         </dependency>
     </dependencies>
-    <properties>
-        <!-- If we release this project, we need to include the Forgerock binary license -->
-        <include.binary.license>
-            ${project.build.directory}/maven-shared-archive-resources/legal-notices
-        </include.binary.license>
-    </properties>
+
     <build>
         <plugins>
             <!--
@@ -62,19 +63,23 @@
             -->
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
+
                 <executions>
                     <execution>
                         <id>build-test-jar</id>
+
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+
                 <configuration>
                     <instructions>
                         <DynamicImport-Package>*</DynamicImport-Package>

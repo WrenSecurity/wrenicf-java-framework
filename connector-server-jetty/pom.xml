@@ -3,6 +3,7 @@
  DO NOT REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
  Copyright (c) 2010-2016 ForgeRock AS. All rights reserved.
+ Portions Copyright 2017 Wren Security.
 
  The contents of this file are subject to the terms
  of the Common Development and Distribution License
@@ -23,18 +24,21 @@
  "Portions Copyrighted [year] [name of copyright owner]"
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>framework</artifactId>
         <groupId>org.forgerock.openicf.framework</groupId>
         <version>1.5.2.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>connector-server-jetty</artifactId>
     <packaging>bundle</packaging>
-    <name>OpenICF Framework - Jetty Server</name>
-    <description>
 
+    <name>Wren:ICF - Server - Jetty Integration</name>
+    <description>
+        Provides Connectors with the ability to run a Connector as a standalone servlet on top of
+        Jetty.
     </description>
 
     <properties>
@@ -51,6 +55,7 @@
             <artifactId>connector-framework-server</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
             <artifactId>websocket-server</artifactId>
@@ -70,12 +75,14 @@
             <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
             <version>1.4</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.forgerock.openicf.framework</groupId>
             <artifactId>connector-framework-server</artifactId>
@@ -83,30 +90,35 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>${groovy.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>io.reactivex</groupId>
             <artifactId>rxjava</artifactId>
             <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.forgerock.openicf.framework</groupId>
             <artifactId>testbundlev1</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
             <version>${jetty.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
@@ -114,12 +126,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+
                 <configuration>
                     <instructions>
                     </instructions>

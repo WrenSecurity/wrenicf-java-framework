@@ -3,6 +3,7 @@
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
  Copyright (c) 2010-2015 ForgeRock AS. All rights reserved.
+ Portions Copyright 2017 Wren Security.
 
  The contents of this file are subject to the terms
  of the Common Development and Distribution License
@@ -24,32 +25,40 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.forgerock</groupId>
         <artifactId>forgerock-parent</artifactId>
         <version>2.0.4</version>
     </parent>
+
     <groupId>org.forgerock.openicf.framework</groupId>
     <artifactId>framework</artifactId>
     <version>1.5.2.0</version>
     <packaging>pom</packaging>
-    <name>OpenICF</name>
+
+    <name>Wren:ICF</name>
     <description>
-        The Open Identity Connectors Framework and Toolkit (OpenICF) is built to help drive development of Connectors.
-        Connectors provide a consistent generic layer between applications and target resources.
+        The Wren Security Identity Connectors Framework and Toolkit (Wren:ICF) is built to help
+        drive development of Connectors. Connectors provide a consistent generic layer between
+        applications that consume identity information and resources that store and maintain
+        identity information.
     </description>
-    <inceptionYear>2010</inceptionYear>
-    <url>http://openicf.forgerock.org/</url>
+
+    <inceptionYear>2017</inceptionYear>
+    <url>https://github.com/WrenSecurity/wrenicf-java-framework</url>
+
     <licenses>
         <license>
             <name>CDDL-1.0</name>
             <url>http://opensource.org/licenses/CDDL-1.0</url>
             <comments>Common Development and Distribution License (CDDL) 1.0.
-                This license applies to OpenICF source code as indicated in the
+                This license applies to Wren:ICF source code as indicated in the
                 sources.
             </comments>
             <distribution>repo</distribution>
         </license>
+
         <license>
             <name>CC BY-NC-ND 3.0</name>
             <url>http://creativecommons.org/licenses/by-nc-nd/3.0/</url>
@@ -60,88 +69,44 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <scm>
-        <connection>scm:git:ssh://git@stash.forgerock.org:7999/openicf/java-framework.git</connection>
-        <developerConnection>scm:git:ssh://git@stash.forgerock.org:7999/openicf/java-framework.git</developerConnection>
-        <url>http://stash.forgerock.org/projects/OPENICF/repos/java-framework/browse</url>
-      <tag>1.5.2.0</tag>
-  </scm>
-    <distributionManagement>
-        <site>
-            <id>forgerock.org</id>
-            <name>ForgeRock Community Server</name>
-            <url>${siteDistributionURL}</url>
-        </site>
-    </distributionManagement>
 
-    <!-- (see FAQ at http://maven.apache.org/guides/mini/guide-central-repository-upload.html ) -->
+    <scm>
+        <url>https://github.com/WrenSecurity/wrenicf-java-framework</url>
+        <connection>scm:git:git://github.com/WrenSecurity/wrenicf-java-framework.git</connection>
+        <developerConnection>scm:git:git@github.com:WrenSecurity/wrenicf-java-framework.git</developerConnection>
+    </scm>
+
     <repositories>
+        <!-- Needed to retrieve parent POM -->
         <repository>
-            <id>forgerock-staging-repository</id>
-            <name>ForgeRock Release Repository</name>
-            <url>http://maven.forgerock.org/repo/releases</url>
+            <id>wrensecurity-releases</id>
+            <name>Wren Security Release Repository</name>
+            <url>https://wrensecurity.jfrog.io/wrensecurity/releases</url>
+
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>
-        <repository>
-            <id>forgerock-snapshots-repository</id>
-            <name>ForgeRock Snapshot Repository</name>
-            <url>http://maven.forgerock.org/repo/snapshots</url>
+
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </releases>
         </repository>
     </repositories>
 
     <mailingLists>
         <mailingList>
-            <name>OpenICF: Technical communications</name>
-            <post>openicf@forgerock.org</post>
-            <subscribe>https://lists.forgerock.org/mailman/listinfo/openicf</subscribe>
-            <unsubscribe>https://lists.forgerock.org/mailman/listinfo/openicf</unsubscribe>
-            <archive>https://lists.forgerock.org/pipermail/openicf/</archive>
-        </mailingList>
-        <mailingList>
-            <name>OpenICF: Commit Notifications</name>
-            <post>commitopenicf@forgerock.org</post>
-            <subscribe>https://lists.forgerock.org/mailman/listinfo/commitopenicf</subscribe>
-            <unsubscribe>https://lists.forgerock.org/mailman/listinfo/commitopenicf</unsubscribe>
-            <archive>https://lists.forgerock.org/pipermail/commitopenicf/</archive>
-        </mailingList>
-        <mailingList>
-            <name>OpenICF: Developers</name>
-            <post>openicf-dev@forgerock.org</post>
-            <subscribe>https://lists.forgerock.org/mailman/listinfo/openicf-dev</subscribe>
-            <unsubscribe>https://lists.forgerock.org/mailman/listinfo/openicf-dev</unsubscribe>
-            <archive>https://lists.forgerock.org/pipermail/openicf-dev/</archive>
+            <name>Wren Security Mailing List</name>
+            <archive>https://groups.google.com/forum/#!forum/wren-security</archive>
+            <subscribe>https://groups.google.com/forum/#!forum/wren-security</subscribe>
+            <unsubscribe>https://groups.google.com/forum/#!forum/wren-security</unsubscribe>
+            <post>wren-security@googlegroups.com</post>
         </mailingList>
     </mailingLists>
 
     <issueManagement>
-        <system>jira</system>
-        <url>https://bugster.forgerock.org/jira/browse/OPENICF/component/10192</url>
+        <system>GitHub Issues</system>
+        <url>https://github.com/WrenSecurity/WrenIDM/issues</url>
     </issueManagement>
-
-    <ciManagement>
-        <system>jenkins</system>
-        <url>https://ci.forgerock.org/view/OpenICF/job/OpenICF - java-framework - postcommit/</url>
-    </ciManagement>
-
-    <developers>
-        <developer>
-            <id>forgerock</id>
-            <name>OpenICF Community</name>
-            <email>openicf@forgerock.org</email>
-            <organization>ForgeRock</organization>
-            <roles>
-                <role>Architect</role>
-                <role>Release Manager</role>
-                <role>Java Developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-    </developers>
 
     <properties>
         <!-- Version management -->
@@ -152,15 +117,13 @@
         <framework.compatibilityVersion>1.5</framework.compatibilityVersion>
         <framework.releaseVersion>1.0</framework.releaseVersion>
         <licenseResourceBundle>org.forgerock.openicf:openicf-license:1.3.0</licenseResourceBundle>
-        <siteDistributionURL>scp://community.internal.forgerock.com/var/www/vhosts/openicf.forgerock.org/httpdocs
-        </siteDistributionURL>
 
         <openicf.osgi.remove.headers>
             Ignore-Package,Include-Resource,Private-Package,Bundle-DocURL,Embedded-Artifacts,Embed-Dependency,Built-By,
             Build-Jdk,Tool
         </openicf.osgi.remove.headers>
 
-        <openicf.maven.plugin.version>1.5.0-RC1</openicf.maven.plugin.version>
+        <openicf.maven.plugin.version>1.5.0</openicf.maven.plugin.version>
         <slf4j.version>1.7.12</slf4j.version>
         <logback.version>1.1.7</logback.version>
         <groovy.version>2.2.2</groovy.version>
@@ -170,7 +133,7 @@
         <!-- Core documentation properties -->
         <frDocPluginVersion>3.1.0</frDocPluginVersion>
         <docTargetVersion>${project.version}</docTargetVersion>
-        <googleAnalyticsAccountId>UA-23412190-10</googleAnalyticsAccountId>
+        <googleAnalyticsAccountId />
         <!--
             Release date is specified only when building the documentation
             for publication. For example:
@@ -189,7 +152,6 @@
         <brandingGroupId>org.forgerock.commons</brandingGroupId>
         <brandingArtifactId>forgerock-doc-default-branding</brandingArtifactId>
         <brandingVersion>3.1.0</brandingVersion>
-
     </properties>
 
     <modules>
@@ -209,34 +171,42 @@
     <profiles>
         <profile>
             <id>1.5.profile</id>
+
             <properties>
                 <!-- forgerock-build-tools stylesheet org/forgerock/javadoc/javadoc.css
                 does not work with JDK7 -->
                 <javadocStylesheet>org/forgerock/javadoc/javadoc.css</javadocStylesheet>
             </properties>
+
             <activation>
                 <jdk>1.5</jdk>
             </activation>
         </profile>
+
         <profile>
             <id>1.6.profile</id>
+
             <properties>
                 <!-- forgerock-build-tools stylesheet org/forgerock/javadoc/javadoc.css
                 does not work with JDK7 -->
                 <javadocStylesheet>org/forgerock/javadoc/javadoc.css</javadocStylesheet>
             </properties>
+
             <modules>
                 <module>connector-framework-protobuf</module>
                 <module>connector-framework-rpc</module>
                 <module>connector-framework-server</module>
                 <module>connector-server-grizzly</module>
             </modules>
+
             <activation>
                 <jdk>1.6</jdk>
             </activation>
         </profile>
+
         <profile>
             <id>1.7.profile</id>
+
             <modules>
                 <module>connector-framework-protobuf</module>
                 <module>connector-framework-rpc</module>
@@ -244,17 +214,21 @@
                 <module>connector-server-jetty</module>
                 <module>connector-server-grizzly</module>
             </modules>
+
             <activation>
                 <jdk>1.7</jdk>
             </activation>
         </profile>
+
         <profile>
             <id>1.8.profile</id>
+
             <properties>
                 <!-- forgerock-build-tools stylesheet org/forgerock/javadoc/javadoc.css
                 does not work with JDK7 -->
                 <javadocStylesheet>org/forgerock/javadoc/javadoc.css</javadocStylesheet>
             </properties>
+
             <modules>
                 <module>connector-framework-protobuf</module>
                 <module>connector-framework-rpc</module>
@@ -262,28 +236,34 @@
                 <module>connector-server-jetty</module>
                 <module>connector-server-grizzly</module>
             </modules>
+
             <activation>
                 <jdk>1.8</jdk>
             </activation>
         </profile>
+
         <profile>
             <id>forgerock-release</id>
+
             <build>
                 <resources>
                     <resource>
                         <directory>src/main/resources</directory>
                         <filtering>true</filtering>
                     </resource>
+
                     <resource>
                         <directory>${project.build.directory}/licenseResource</directory>
                         <filtering>false</filtering>
                     </resource>
                 </resources>
+
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-release-plugin</artifactId>
                         <version>2.5.2</version>
+
                         <configuration>
                             <mavenExecutorId>forked-path</mavenExecutorId>
                             <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -329,12 +309,14 @@
                 <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>6.9.10</version>
                 <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.easytesting</groupId>
                 <artifactId>fest-assert</artifactId>
@@ -351,6 +333,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.19</version>
+
                     <configuration>
                         <includes>
                             <include>**/Test*.java</include>
@@ -360,47 +343,57 @@
                         </includes>
                     </configuration>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.10.3</version>
+
                     <configuration>
                         <docfilessubdirs>true</docfilessubdirs>
                         <source>${maven.compiler.source}</source>
                         <show>public</show>
+
                         <links>
                             <link>http://docs.oracle.com/javase/6/docs/api/</link>
                             <link>http://docs.groovy-lang.org/latest/html/api/</link>
                         </links>
                     </configuration>
+
                     <executions>
                         <execution>
                             <id>aggregate</id>
+                            <phase>site</phase>
+
                             <goals>
                                 <goal>aggregate</goal>
                             </goals>
-                            <phase>site</phase>
                         </execution>
                     </executions>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>2.10</version>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.4</version>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <extensions>true</extensions>
+
                     <configuration>
                         <instructions>
                             <!-- OSGi Headers -->
@@ -414,12 +407,14 @@
                         </instructions>
                     </configuration>
                 </plugin>
+
                 <plugin>
                     <groupId>org.forgerock.commons</groupId>
                     <artifactId>forgerock-doc-maven-plugin</artifactId>
                     <version>${frDocPluginVersion}</version>
+
                     <configuration>
-                        <projectName>OpenICF</projectName>
+                        <projectName>Wren:ICF</projectName>
                         <googleAnalyticsId>${googleAnalyticsAccountId}</googleAnalyticsId>
                         <projectVersion>${docTargetVersion}</projectVersion>
                         <releaseVersion>${docTargetVersion}</releaseVersion>
@@ -436,12 +431,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-remote-resources-plugin</artifactId>
                 <version>1.5</version>
+
                 <executions>
                     <execution>
                         <id>legal-files</id>
+
                         <goals>
                             <goal>process</goal>
                         </goals>
+
                         <configuration>
                             <resourceBundles>
                                 <resourceBundle>${licenseResourceBundle}</resourceBundle>
@@ -450,32 +448,40 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.3</version>
+
                 <executions>
                     <execution>
                         <id>attach-descriptor</id>
+
                         <goals>
                             <goal>attach-descriptor</goal>
                         </goals>
                     </execution>
                 </executions>
+
                 <configuration>
                     <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.forgerock.maven.plugins</groupId>
                 <artifactId>javadoc-updater-maven-plugin</artifactId>
                 <version>1.0.0</version>
+
                 <executions>
                     <execution>
                         <phase>post-site</phase>
+
                         <goals>
                             <goal>fixjavadoc</goal>
                         </goals>
+
                         <configuration>
                             <directory>${project.reporting.outputDirectory}</directory>
                         </configuration>
@@ -484,12 +490,14 @@
             </plugin>
         </plugins>
     </build>
+
     <reporting>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>2.8</version>
+
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -518,9 +526,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.3</version>
+
                 <reportSets>
                     <reportSet>
                         <id>html</id>
+
                         <configuration>
                             <dependencySourceExcludes>
                                 <dependencySourceExclude>*:testcommonv1:*</dependencySourceExclude>
@@ -528,10 +538,12 @@
                                 <dependencySourceExclude>*:testbundlev1:*</dependencySourceExclude>
                                 <dependencySourceExclude>*:testbundlev2:*</dependencySourceExclude>
                             </dependencySourceExcludes>
+
                             <excludePackageNames>
                                 org.identityconnectors.testcommon:org.identityconnectors.testconnector
                             </excludePackageNames>
                         </configuration>
+
                         <reports>
                             <report>aggregate</report>
                         </reports>
@@ -549,10 +561,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>2.19</version>
+
                 <reportSets>
                     <reportSet>
                         <id>${project.artifactId}-test-report-only</id>
                         <inherited>true</inherited>
+
                         <reports>
                             <report>report</report>
                         </reports>
