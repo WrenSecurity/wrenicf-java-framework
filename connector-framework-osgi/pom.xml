@@ -3,6 +3,7 @@
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
  Copyright (c) 2010-2014 ForgeRock AS. All rights reserved.
+ Portions Copyright 2017-2018 Wren Security.
 
  The contents of this file are subject to the terms
  of the Common Development and Distribution License
@@ -24,17 +25,20 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.forgerock.openicf.framework</groupId>
         <artifactId>framework</artifactId>
         <version>1.4.1.0</version>
     </parent>
+
     <artifactId>connector-framework-osgi</artifactId>
     <packaging>bundle</packaging>
-    <name>OpenICF Framework - OSGi</name>
+
+    <name>Wren:ICF - Framework - OSGi</name>
     <description>
-        The IdentityConnectors framework provides a container to separate the Connector bundle from the application.
-        The framework provides many common features that developers would otherwise need to implement on their own.
+        This package provides the appropriate wrapper interfaces and logic to run a connector inside
+        an OSGi container without the connector bundle having to interface with OSGi directly.
     </description>
 
     <dependencies>
@@ -42,6 +46,7 @@
             <groupId>org.forgerock.openicf.framework</groupId>
             <artifactId>connector-framework-internal</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-extender</artifactId>
@@ -55,6 +60,7 @@
             <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -62,18 +68,14 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    <properties>
-        <!-- If we release this project, we need to include the Forgerock binary license -->
-        <include.binary.license>
-            ${project.build.directory}/maven-shared-archive-resources/legal-notices
-        </include.binary.license>
-    </properties>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.forgerock.openicf.framework.impl.api.osgi.internal.Activator</Bundle-Activator>
