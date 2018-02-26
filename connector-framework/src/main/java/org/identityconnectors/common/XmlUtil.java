@@ -3,6 +3,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -93,8 +94,8 @@ public final class XmlUtil {
 
     /**
      * Return the value of an attribute on an element.
-     * <p/>
-     * The DOM getAttribute method returns an empty string if the attribute
+     *
+     * <p>The DOM getAttribute method returns an empty string if the attribute
      * doesn't exist. Here, we detect this and return null.
      */
     public static String getAttribute(Element e, String name) {
@@ -213,17 +214,17 @@ public final class XmlUtil {
 
     /**
      * Return the content of the given element.
-     * <p/>
-     * We will descend to an arbitrary depth looking for the first text node.
-     * <p/>
-     * Note that the parser may break what was originally a single string of
+     *
+     * <p>We will descend to an arbitrary depth looking for the first text node.
+     *
+     * <p>Note that the parser may break what was originally a single string of
      * pcdata into multiple adjacent text nodes. Xerces appears to do this when
      * it encounters a '$' in the text, not sure if there is specified behavior,
      * or if its parser specific.
-     * <p/>
-     * Here, we will congeal adjacent text nodes.
-     * <p/>
-     * We will NOT ignore text nodes that have only whitespace.
+     *
+     * <p>Here, we will congeal adjacent text nodes.
+     *
+     * <p>We will NOT ignore text nodes that have only whitespace.
      */
     public static String getContent(Element e) {
 

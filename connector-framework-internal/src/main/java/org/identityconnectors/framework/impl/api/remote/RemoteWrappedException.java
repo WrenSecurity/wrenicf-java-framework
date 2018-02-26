@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2013 ForgeRock AS. All Rights Reserved
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -36,14 +37,11 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 /**
  * RemoteWrappedException wraps every exception which are received from Remote
  * Connector Server.
- * <p/>
- * <b>This Exception is not allowed to use in Connectors!!!</b>
- * <p/>
  *
+ * <p><b>This Exception is not allowed for use by Connectors</b>
  *
- *
- * This type of exception is not allowed to be serialise because this exception
- * represents any after deserialization.
+ * <p>This type of exception is not allowed to be serialise because this
+ * exception represents any after deserialization.
  *
  * This code example show how to get the remote stack trace and how to use the
  * same catches to handle the exceptions regardless its origin.
@@ -64,7 +62,7 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
  *          t.printStackTrace();
  *      }
  *  }
- * <code>
+ * </code>
  * </pre>
  *
  * @author Laszlo Hordos

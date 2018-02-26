@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2013 ForgeRock AS. All Rights Reserved
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -27,8 +28,8 @@ package org.identityconnectors.framework.spi;
 /**
  * A Stateful Configuration interface extends the default {@link Configuration}
  * and makes the framework keep the same instance.
- * <p/>
- * The default Configuration object instance is constructed every single time
+ *
+ * <p>The default Configuration object instance is constructed every single time
  * before the {@link Connector#init(Configuration)} is called. If the
  * configuration class implements this interface then the Framework keeps one
  * instance of Configuration and the {@link Connector#init(Configuration)} is
@@ -39,12 +40,11 @@ package org.identityconnectors.framework.spi;
  * Connector developer must quarantine that the necessary resource
  * initialisation are thread-safe.
  *
- * <p/>
- * If the connector implements the {@link PoolableConnector} then this
+ * <p>If the connector implements the {@link PoolableConnector} then this
  * configuration is kept in the
- * {@link org.identityconnectors.framework.impl.api.local.ConnectorPoolManager}
- * and when the
- * {@link org.identityconnectors.framework.impl.api.local.ConnectorPoolManager#dispose()}
+ * {@code org.identityconnectors.framework.impl.api.local.ConnectorPoolManager}
+ * and when
+ * {@code ConnectorPoolManager.dispose()}
  * calls the {@link #release()} method. If the connector implements only the
  * {@link Connector} then this configuration is kept in the
  * {@link org.identityconnectors.framework.api.ConnectorFacade} and the

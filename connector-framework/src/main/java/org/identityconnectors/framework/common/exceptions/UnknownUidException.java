@@ -3,6 +3,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -28,8 +29,8 @@ import org.identityconnectors.framework.common.objects.Uid;
 /**
  * Thrown when a {@link Uid} that is specified as input to a connector operation
  * identifies no object on the target resource.
- * <p/>
- * When implementing {@code AuthenticateOp} this exception may be thrown by a
+ *
+ * <p>When implementing {@code AuthenticateOp} this exception may be thrown by a
  * Connector if it is unable to locate an account necessary to perform
  * authentication.
  *

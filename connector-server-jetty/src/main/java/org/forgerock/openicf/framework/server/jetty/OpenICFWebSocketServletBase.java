@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -116,8 +117,6 @@ public class OpenICFWebSocketServletBase extends WebSocketServlet {
 
     /**
      * Overwrite with custom implementation.
-     * 
-     * @return
      */
     protected void configure(ConnectorFramework connectorFramework) {
         logger.info("Implementation should overwrite this method");

@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -113,8 +114,8 @@ public class SecurityUtil {
 
     /**
      * Load a class with a given name.
-     * <p/>
-     * It will try to load the class in the following order:
+     *
+     * <p>It will try to load the class in the following order:
      * <ul>
      * <li>From Thread.currentThread().getContextClassLoader()
      * <li>Using the basic Class.forName()

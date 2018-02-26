@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -69,9 +70,6 @@ public class BatchImpl extends ConnectorAPIOperationRunner implements
         this.referenceCounter = referenceCounter;
     }
 
-    /**
-     * {@inherit}
-     */
     public Subscription executeBatch(final List<BatchTask> tasks, final Observer<BatchResult> observer,
                                final OperationOptions options) {
         if (tasks == null || tasks.size() == 0) {
@@ -109,9 +107,6 @@ public class BatchImpl extends ConnectorAPIOperationRunner implements
 
     }
 
-    /**
-     * {@inherit}
-     */
     public Subscription queryBatch(final BatchToken batchToken, final Observer<BatchResult> observer,
                              final OperationOptions options) {
         Assertions.nullCheck(batchToken, "batchToken");

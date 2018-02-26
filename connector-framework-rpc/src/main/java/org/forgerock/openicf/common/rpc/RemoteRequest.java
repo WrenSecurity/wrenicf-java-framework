@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -36,9 +37,9 @@ import org.forgerock.util.promise.ResultHandler;
 /**
  * A RemoteRequest represents a locally requested procedure call executed
  * remotely.
- * <p/>
- * The RemoteRequest and {@link LocalRequest} are the representation of the same
- * call on caller and receiver side.
+ *
+ * <p>The RemoteRequest and {@link LocalRequest} are the representation of the
+ * same call on caller and receiver side.
  *
  */
 public abstract class RemoteRequest<V, E extends Exception, G extends RemoteConnectionGroup<G, H, P>, H extends RemoteConnectionHolder<G, H, P>, P extends RemoteConnectionContext<G, H, P>> {
@@ -59,10 +60,12 @@ public abstract class RemoteRequest<V, E extends Exception, G extends RemoteConn
     }
 
     /**
-     * Check if this object was {@ref inconsistent}-ed and don't dispose.
+     * Check if this object was marked inconsistent and should not be disposed.
      *
      * @return 'true' when object is still active or 'false' when this can be
      *         disposed.
+     *
+     * @see #inconsistent()
      */
     public abstract boolean check();
 

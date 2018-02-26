@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -41,7 +42,7 @@ public interface AsyncConnectorInfoManager extends ConnectorInfoManager {
     /**
      * Add a promise which will be fulfilled with the
      * {@link org.identityconnectors.framework.api.ConnectorInfo} for the given
-     * {@ConnectorKey}.
+     * {@link ConnectorKey}.
      * 
      * Add a Promise which will be fulfilled immediately if the
      * {@link org.identityconnectors.framework.api.ConnectorInfo} is maintained
@@ -55,7 +56,7 @@ public interface AsyncConnectorInfoManager extends ConnectorInfoManager {
     /**
      * Add a promise which will be fulfilled with the
      * {@link org.identityconnectors.framework.api.ConnectorInfo} for the given
-     * {@ConnectorKeyRange}.
+     * {@link ConnectorKeyRange}.
      *
      * Add a Promise which will be fulfilled immediately if the
      * {@link org.identityconnectors.framework.api.ConnectorInfo} is maintained

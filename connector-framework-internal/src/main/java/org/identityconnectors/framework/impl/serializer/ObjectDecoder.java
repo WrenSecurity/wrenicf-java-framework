@@ -3,6 +3,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -29,12 +30,16 @@ package org.identityconnectors.framework.impl.serializer;
  */
 public interface ObjectDecoder {
     /**
-     * Reads an object using the appropriate serializer for that object
-     * @param fieldName A hint of the field name. Ignored for binary
-     * serialization. The subelement name for xml serialization
-     * @expectedType Ignored for binary serialization. For xml serialization,
-     * this must be specified if it was written in-line.
-     * @dflt The default value if there is no value.
+     * Reads an object using the appropriate serializer for that object.
+     *
+     * @param fieldName
+     *   A hint of the field name. Ignored for binary serialization. The
+     *   subelement name for xml serialization
+     * @param expectedType
+     *   Ignored for binary serialization. For xml serialization, this must be
+     *   specified if it was written in-line.
+     * @param dflt
+     *   The default value if there is no value.
      */
     public Object readObjectField(String fieldName,
             Class<?> expectedType,
@@ -42,57 +47,78 @@ public interface ObjectDecoder {
 
     /**
      * Reads a boolean.
-     * @param fieldName A hint of the field name. Ignored for binary
-     * serialization. The attribute name for xml serialization
-     * @dflt The default value if there is no value.
+     *
+     * @param fieldName
+     *   A hint of the field name. Ignored for binary serialization. The
+     *   attribute name for xml serialization
+     * @param dflt
+     *   The default value if there is no value.
      */
     public boolean readBooleanField(String fieldName, boolean dflt);
 
     /**
      * Reads an int.
-     * @param fieldName A hint of the field name. Ignored for binary
-     * serialization. The attribute name for xml serialization
-     * @dflt The default value if there is no value.
+     *
+     * @param fieldName
+     *   A hint of the field name. Ignored for binary serialization. The
+     *   attribute name for xml serialization
+     * @param dflt
+     *   The default value if there is no value.
      */
     public int readIntField(String fieldName, int dflt);
 
     /**
      * Reads a long.
-     * @param fieldName A hint of the field name. Ignored for binary
-     * serialization. The attribute name for xml serialization
-     * @dflt The default value if there is no value.
+     *
+     * @param fieldName
+     *   A hint of the field name. Ignored for binary serialization. The
+     *   attribute name for xml serialization
+     * @param dflt
+     *   The default value if there is no value.
      */
     public long readLongField(String fieldName, long dflt);
 
     /**
      * Reads a float.
-     * @param fieldName A hint of the field name. Ignored for binary
-     * serialization. The attribute name for xml serialization
-     * @dflt The default value if there is no value.
+     *
+     * @param fieldName
+     *   A hint of the field name. Ignored for binary serialization. The
+     *   attribute name for xml serialization
+     * @param dflt
+     *   The default value if there is no value.
      */
     public float readFloatField(String fieldName, float dflt );
 
     /**
      * Reads a Class.
-     * @param fieldName A hint of the field name. Ignored for binary
-     * serialization. The attribute name for xml serialization
-     * @dflt The default value if there is no value.
+     *
+     * @param fieldName
+     *   A hint of the field name. Ignored for binary serialization. The
+     *   attribute name for xml serialization
+     * @param dflt
+     *   The default value if there is no value.
      */
     public Class<?> readClassField(String fieldName, Class<?> dflt );
 
     /**
      * Reads a String.
-     * @param fieldName A hint of the field name. Ignored for binary
-     * serialization. The attribute name for xml serialization
-     * @dflt The default value if there is no value.
+     *
+     * @param fieldName
+     *   A hint of the field name. Ignored for binary serialization. The
+     *   attribute name for xml serialization
+     * @param dflt
+     *   The default value if there is no value.
      */
     public String readStringField(String fieldName, String dflt );
 
     /**
      * Reads a double.
-     * @param fieldName A hint of the field name. Ignored for binary
-     * serialization. The attribute name for xml serialization
-     * @dflt The default value if there is no value.
+     *
+     * @param fieldName
+     *   A hint of the field name. Ignored for binary serialization. The
+     *   attribute name for xml serialization
+     * @param dflt
+     *   The default value if there is no value.
      */
     public double readDoubleField(String fieldName, double dflt );
 
@@ -143,7 +169,6 @@ public interface ObjectDecoder {
 
     /**
      * Returns the number of anonymous sub-objects.
-     * @return
      */
     public int getNumSubObjects();
 

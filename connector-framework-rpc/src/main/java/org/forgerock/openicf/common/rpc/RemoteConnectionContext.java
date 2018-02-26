@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -28,8 +29,8 @@ package org.forgerock.openicf.common.rpc;
  * A RemoteConnectionContext is a custom context to provide application specific
  * information to create the
  * {@link org.forgerock.openicf.common.rpc.RemoteRequest}.
- * <p/>
- * The {@link org.forgerock.openicf.common.rpc.RemoteRequest} may depends on
+ *
+ * <p>The {@link org.forgerock.openicf.common.rpc.RemoteRequest} may depends on
  * which {@link org.forgerock.openicf.common.rpc.RemoteConnectionGroup}
  * distributes the request. Instance of this class is provided to
  * {@link org.forgerock.openicf.common.rpc.RemoteRequestFactory} to produce the
@@ -41,12 +42,10 @@ public interface RemoteConnectionContext<G extends RemoteConnectionGroup<G, H, P
 
     /**
      * Return the {@link org.forgerock.openicf.common.rpc.RemoteConnectionGroup}
-     * <p/>
-     * Return the {@link org.forgerock.openicf.common.rpc.RemoteConnectionGroup}
-     * in which this instance belongs to.
+     * to which this instance belongs.
      * 
      * @return the
-     *         {@link org.forgerock.openicf.common.rpc.RemoteConnectionGroup} in
+     *         {@link org.forgerock.openicf.common.rpc.RemoteConnectionGroup} to
      *         which this instance belongs to.
      */
     G getRemoteConnectionGroup();

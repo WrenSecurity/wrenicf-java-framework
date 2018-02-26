@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2013-2015 ForgeRock AS. All Rights Reserved
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -26,15 +27,13 @@ package org.identityconnectors.common;
 
 /**
  * A version range is an interval describing a set of {@link Version versions}.
- * <p/>
- * A range has a left (lower) endpoint and a right (upper) endpoint. Each
+ *
+ * <p>A range has a left (lower) endpoint and a right (upper) endpoint. Each
  * endpoint can be open (excluded from the set) or closed (included in the set).
  *
- * <p>
- * {@code VersionRange} objects are immutable.
+ * <p>{@code VersionRange} objects are immutable.
  *
  * @author Laszlo Hordos
- * @Immutable
  * @since 1.4
  */
 public class VersionRange {
