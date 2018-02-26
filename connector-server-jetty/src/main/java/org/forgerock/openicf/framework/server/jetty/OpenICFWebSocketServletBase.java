@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015-2016 ForgeRock AS.
+ * Portions Copyright 2018 Wren Security.
  */
 
 package org.forgerock.openicf.framework.server.jetty;
@@ -143,8 +144,6 @@ public class OpenICFWebSocketServletBase extends WebSocketServlet {
 
     /**
      * Overwrite with custom implementation.
-     *
-     * @return
      */
     protected void configure(ConnectorFramework connectorFramework) {
         logger.info("Implementation should overwrite this method");

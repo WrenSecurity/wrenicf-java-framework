@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -23,9 +24,10 @@
  */
 
 /**
- * Provide the Google Protocol Buffer Messages required for the Remote OpenICF Server communication.
- * <p/>
- * The messages are extracted for easy extensibility in the future.  
+ * Provide the Google Protocol Buffer Messages required for the Remote OpenICF
+ * Server communication.
+ *
+ * <p>The messages are extracted for easy extensibility in the future.
  * 
  * @since 1.5
  */

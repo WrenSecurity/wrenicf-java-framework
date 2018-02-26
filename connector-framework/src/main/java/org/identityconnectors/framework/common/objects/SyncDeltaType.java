@@ -3,6 +3,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -48,8 +49,9 @@ public enum SyncDeltaType {
 
     /**
      * The change represents a CREATE in the resource.
-     * <p/>
-     * Experimental type to support better event mechanism where it's possible.
+     *
+     * <p>Experimental type to support better event mechanism where it's
+     * possible.
      *
      * @see #CREATE_OR_UPDATE
      * @since 1.4
@@ -58,8 +60,9 @@ public enum SyncDeltaType {
 
     /**
      * The change represents a UPDATE in the resource.
-     * <p/>
-     * Experimental type to support better event mechanism where it's possible.
+     *
+     * <p>Experimental type to support better event mechanism where it's
+     * possible.
      *
      * @see #CREATE_OR_UPDATE
      * @since 1.4

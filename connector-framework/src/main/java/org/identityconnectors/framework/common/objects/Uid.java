@@ -3,6 +3,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -36,8 +37,8 @@ import org.identityconnectors.framework.api.operations.UpdateApiOp;
  * A single-valued attribute that represents the <i>unique identifier</i> of an
  * object within the name-space of the target resource. If possible, this unique
  * identifier also should be immutable.
- * <p/>
- * When an application creates an object on a target resource, the
+ *
+ * <p>When an application creates an object on a target resource, the
  * {@link CreateApiOp#create create} operation returns as its result the
  * <code>Uid</code> of the created object. An application also can use the
  * {@link SearchApiOp#search search} operation to discover the <code>Uid</code>
@@ -46,8 +47,8 @@ import org.identityconnectors.framework.api.operations.UpdateApiOp;
  * {@link GetApiOp#getObject get}, {@link DeleteApiOp#delete delete} or
  * {@link UpdateApiOp#update update} that object. See the documentation for
  * {@link Name} for comparison.
- * <p/>
- * Ideally, the value of <code>Uid</code> would be a <i>Globally Unique
+ *
+ * <p>Ideally, the value of <code>Uid</code> would be a <i>Globally Unique
  * IDentifier (GUID)</i>. However, not every target resource provides a globally
  * unique and immutable identifier for each of its objects. For some connector
  * implementations, therefore, the <code>Uid</code> value is only <i>locally</i>
@@ -58,17 +59,17 @@ import org.identityconnectors.framework.api.operations.UpdateApiOp;
  * the <code>Uid</code> of an object. The fact that changing an object might
  * change its <code>Uid</code> is the reason that {@link UpdateApiOp#update
  * update} returns <code>Uid</code>.
- * <p/>
- * {@link Uid} by definition must be a single-valued attribute. Its value must
- * always convert to a string, regardless of the underlying type of the native
- * identifier on the target. The string value of any native id must be
+ *
+ * <p>{@link Uid} by definition must be a single-valued attribute. Its value
+ * must always convert to a string, regardless of the underlying type of the
+ * native identifier on the target. The string value of any native id must be
  * canonical.
- * <p/>
- * Uid is never allowed to appear in the {@link Schema}, nor may Uid appear in
- * the attribute set of a {@link CreateApiOp#create create} operation. This is
- * because Uid is not a true attribute of an object, but rather a reference to
- * that object. Uid extends {@link Attribute} only so that Uid can be searchable
- * and compatible with the filter translators.
+ *
+ * <p>Uid is never allowed to appear in the {@link Schema}, nor may Uid appear
+ * in the attribute set of a {@link CreateApiOp#create create} operation. This
+ * is because Uid is not a true attribute of an object, but rather a reference
+ * to that object. Uid extends {@link Attribute} only so that Uid can be
+ * searchable and compatible with the filter translators.
  */
 public final class Uid extends Attribute {
 
@@ -112,8 +113,8 @@ public final class Uid extends Attribute {
 
     /**
      * Return the string representation of the revision value of the
-     * <p/>
-     * The revision number specifies a given version ot the
+     *
+     * <p>The revision number specifies a given version of the
      * {@link ConnectorObject object} identified by the
      * {@link org.identityconnectors.framework.common.objects.Uid#getUidValue()}
      *

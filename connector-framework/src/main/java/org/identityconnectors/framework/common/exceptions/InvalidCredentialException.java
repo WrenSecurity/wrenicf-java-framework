@@ -3,6 +3,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -24,10 +25,10 @@ package org.identityconnectors.framework.common.exceptions;
 
 /**
  * InvalidCredentialException signals that user authentication failed.
- * <p/>
- * This exception is thrown by Connector if authentication failed. For example,
- * a <code>Connector</code> throws this exception if the user entered an
- * incorrect password.
+ *
+ * <p>This exception is thrown by Connector if authentication failed. For
+ * example, a <code>Connector</code> throws this exception if the user entered
+ * an incorrect password.
  *
  * @see javax.security.auth.login.FailedLoginException
  */
