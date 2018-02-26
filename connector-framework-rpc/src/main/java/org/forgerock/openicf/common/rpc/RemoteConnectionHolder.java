@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -29,10 +30,10 @@ import java.util.concurrent.Future;
 /**
  * A RemoteConnectionHolder is a wrapper class for the underlying communication
  * chanel.
- * <p/>
- * The API is detached from the real underlying protocol and abstracted through
- * this interface. The message transmitted via this implementation should
- * trigger the appropriate method on
+ *
+ * <p>The API is detached from the real underlying protocol and abstracted
+ * through this interface. The message transmitted via this implementation
+ * should trigger the appropriate method on
  * {@link org.forgerock.openicf.common.rpc.MessageListener}.
  *
  */

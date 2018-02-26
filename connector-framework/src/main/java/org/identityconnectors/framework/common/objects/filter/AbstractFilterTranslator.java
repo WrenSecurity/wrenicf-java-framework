@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2015 ForgeRock AS.
+ * Portions Copyright 2018 Wren Security.
  */
 package org.identityconnectors.framework.common.objects.filter;
 
@@ -80,7 +81,7 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      *            The filter to translate.
      * @return The list of queries to be performed. The list <code>size()</code>
      *         may be one of the following:
-     *         <ol>
+     *         <ul>
      *         <li>0 - This signifies <b>fetch everything</b>. This may occur if
      *         your filter was null or one of your <code>create*</code> methods
      *         returned null.</li>
@@ -91,7 +92,7 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      *         behavior standpoint since <code>ConnectorFacade</code> performs a
      *         second level of filtering. However it is undesirable from a
      *         performance standpoint.</li>
-     *         <li>>1 - List contains multiple queries that must be performed in
+     *         <li>&gt;1 - List contains multiple queries that must be performed in
      *         order to meet the filter that was passed in. Note that this only
      *         occurs if your {@link #createOrExpression} method can return
      *         null. If this happens, it is the responsibility of the connector
@@ -101,7 +102,7 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      *         been visited thus far. This will not scale well if your result
      *         sets are large. Therefore it is <b>recommended</b> that if at all
      *         possible you implement {@link #createOrExpression}</li>
-     *         </ol>
+     *         </ul>
      */
     public final List<T> translate(Filter filter) {
         if (filter == null) {

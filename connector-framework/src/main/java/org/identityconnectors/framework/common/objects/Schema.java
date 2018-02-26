@@ -3,6 +3,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -46,7 +47,7 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
  * <li>Supported ObjectClasses by operation (
  * {@link #getSupportedObjectClassesByOperation()}).</li>
  * <li>Supported OperationOptionInfo by operation(
- * {@link #getSupportedOptionsByOperation()()}).</li>
+ * {@link #getSupportedOptionsByOperation()}).</li>
  * </ol>
  *
  * TODO: add more to describe and what is expected from this call and how it is

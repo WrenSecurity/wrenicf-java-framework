@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2013 ForgeRock AS. All Rights Reserved
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -30,8 +31,6 @@ import org.identityconnectors.framework.common.objects.Uid;
 /**
  * RetryableException indicates that a failure may be temporary, and that
  * retrying the same request may be able to succeed in the future.
- * <p/>
- *
  *
  * @author Laszlo Hordos
  * @since 1.4
@@ -115,10 +114,10 @@ public class RetryableException extends ConnectorException {
      * was created with <code>Uid</code> and Application should call the
      * {@link org.identityconnectors.framework.spi.operations.UpdateOp#update(org.identityconnectors.framework.common.objects.ObjectClass, org.identityconnectors.framework.common.objects.Uid, java.util.Set, org.identityconnectors.framework.common.objects.OperationOptions)}
      * method now.
-     * <p/>
-     * Use this only if the created object can not be deleted. The best-practice
-     * should always be the Connector implementation reverts the changes if the
-     * operation failed.
+     *
+     * <p>Use this only if the created object can not be deleted. The
+     * best-practice should always be the Connector implementation reverts the
+     * changes if the operation failed.
      *
      * @param message
      *            the detail message (which is saved for later retrieval by the

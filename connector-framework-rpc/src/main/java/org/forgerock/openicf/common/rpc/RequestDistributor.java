@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -28,17 +29,17 @@ package org.forgerock.openicf.common.rpc;
  * A RequestDistributor delivers the
  * {@link org.forgerock.openicf.common.rpc.RemoteRequest} to the connected
  * endpoint.
- * <p/>
- * The {@link org.forgerock.openicf.common.rpc.RemoteRequestFactory} is used to
- * create a {@link org.forgerock.openicf.common.rpc.RemoteConnectionContext}
+ *
+ * <p>The {@link org.forgerock.openicf.common.rpc.RemoteRequestFactory} is used
+ * to create a {@link org.forgerock.openicf.common.rpc.RemoteConnectionContext}
  * aware {@link org.forgerock.openicf.common.rpc.RemoteRequest} which will be
  * delivered.
- * <p/>
- * The implementation may hold multiple transmission channels and try all to
+ *
+ * <p>The implementation may hold multiple transmission channels and try all to
  * deliver the message before if fails.
- * <p/>
- * The failed delivery signaled with null empty to avoid the expensive Throw and
- * Catch especially when many implementation are chained together.
+ *
+ * <p>The failed delivery signaled with null empty to avoid the expensive Throw
+ * and Catch especially when many implementation are chained together.
  * 
  * @see org.forgerock.openicf.common.rpc.FailoverLoadBalancingAlgorithm
  * @see org.forgerock.openicf.common.rpc.RoundRobinLoadBalancingAlgorithm

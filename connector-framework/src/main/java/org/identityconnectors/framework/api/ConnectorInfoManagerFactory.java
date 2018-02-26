@@ -3,6 +3,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -96,8 +97,8 @@ public abstract class ConnectorInfoManagerFactory {
      * NOTICE: This method is an early specification of the Events API for
      * 1.2.x.x version. Use carefully, this package may change before the final
      * 1.2.0.0 release.
-     * <p/>
-     * As now the {@code ConnectorInfoManager} MUST implement the
+     *
+     * <p>As now the {@code ConnectorInfoManager} MUST implement the
      * {@link Runnable} to connect to the remote connector server. <b>NOTE:</b>
      * The results from this call are automatically cached and keyed by the
      * RemoteFrameworkConnectionInfo passed in. To clear the cache, call
