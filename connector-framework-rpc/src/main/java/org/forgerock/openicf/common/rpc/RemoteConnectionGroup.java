@@ -2,6 +2,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -38,12 +39,12 @@ import org.forgerock.util.promise.Promise;
 /**
  * A RemoteConnectionGroups represent a remote pair of another instance of
  * RemoteConnectionGroups.
- * <p/>
- * RemoteConnectionGroups holds the
+ *
+ * <p>RemoteConnectionGroups holds the
  * {@link org.forgerock.openicf.common.rpc.RemoteConnectionHolder} which are
  * connected to the remotely paired RemoteConnectionGroups.
- * <p/>
- * The local instance of {@link RemoteConnectionGroup#remoteRequests} paired
+ *
+ * <p>The local instance of {@link RemoteConnectionGroup#remoteRequests} paired
  * with the remote instance of {@link RemoteConnectionGroup#localRequests}.
  *
  */

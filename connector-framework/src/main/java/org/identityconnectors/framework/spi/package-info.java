@@ -3,6 +3,7 @@
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Portions Copyright 2018 Wren Security.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -22,31 +23,44 @@
  */
 
 /**
- * This is the "Service Provider Interface" package.  The {@link org.identityconnectors.framework.spi.Connector} developer
- * is responsible for implementing the following interfaces to build a {@link org.identityconnectors.framework.spi.Connector}.
- * <ul>
- * <li>First, one must implement the {@link org.identityconnectors.framework.spi.Configuration} interface.
- * The {@link org.identityconnectors.framework.spi.Configuration#validate} method is used to determine
- * whether the configuration information that has been provided is valid.  The implementation should simply be a Java Bean.
- * There should be a getter and setter for each configuration property. For instance, if the resource is a database instance
- * then some typical configuration information would include the JDBC driver, the host name of remote machine or the URL,
- * and some connection credentials.  The getter should return the default value.
+ * This is the "Service Provider Interface" package.  The
+ * {@link org.identityconnectors.framework.spi.Connector} developer
+ * is responsible for implementing the following interfaces to build a
+ * {@link org.identityconnectors.framework.spi.Connector}.
+ * <ol>
+ * <li>One must implement the
+ * {@link org.identityconnectors.framework.spi.Configuration} interface. The
+ * {@link org.identityconnectors.framework.spi.Configuration#validate} method is
+ * used to determine whether the configuration information that has been
+ * provided is valid.  The implementation should simply be a Java Bean. There
+ * should be a getter and setter for each configuration property. For instance,
+ * if the resource is a database instance then some typical configuration
+ * information would include the JDBC driver, the host name of remote machine or
+ * the URL, and some connection credentials.  The getter should return the
+ * default value.
  * </li>
- * <li>Second, one should implement the {@link org.identityconnectors.framework.spi.Connector} interface.
- * This interface insures proper initialization and disposal of the {@link org.identityconnectors.framework.spi.Connector}.
- * If the {@link org.identityconnectors.framework.spi.Connector} developer would like the API to handle 'Connection Pooling',
- * the Connector must implement the {@link org.identityconnectors.framework.spi.PoolableConnector} interface.
+ * <li>One should implement the
+ * {@link org.identityconnectors.framework.spi.Connector} interface. This
+ * interface insures proper initialization and disposal of the
+ * {@link org.identityconnectors.framework.spi.Connector}. If the
+ * {@link org.identityconnectors.framework.spi.Connector} developer would like
+ * the API to handle 'Connection Pooling', the Connector must implement the
+ * {@link org.identityconnectors.framework.spi.PoolableConnector} interface.
  * </li>
- * <li>Third, one should implement all the operations the resource can support, such as
+ * <li>One should implement all the operations the resource can support,
+ * such as
  * {@link org.identityconnectors.framework.spi.operations.CreateOp},
  * {@link org.identityconnectors.framework.spi.operations.UpdateOp},
  * {@link org.identityconnectors.framework.spi.operations.DeleteOp},
  * {@link org.identityconnectors.framework.spi.operations.SearchOp}, etc..
- * <p>
- * The {@link org.identityconnectors.framework.spi.operations operations} package
- * has many operations from which to choose. In some cases, one operation does the same thing as another
- * but exposes more options.   For instance there are two update operations.
- * {@link org.identityconnectors.framework.spi.operations.UpdateOp} is simpler to implement than
+ * </ol>
+ *
+ * <p>The {@link org.identityconnectors.framework.spi.operations operations}
+ * package has many operations from which to choose. In some cases, one
+ * operation does the same thing as another but exposes more options. For
+ * instance there are two update operations.
+ * {@link org.identityconnectors.framework.spi.operations.UpdateOp} is simpler
+ * to implement than
  * {@link org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp}.
  */
 package org.identityconnectors.framework.spi;

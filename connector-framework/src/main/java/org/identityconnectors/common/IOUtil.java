@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2013 ConnId
  * Portions Copyrighted 2015 ForgeRock AS.
+ * Portions Copyright 2018 Wren Security.
  */
 package org.identityconnectors.common;
 
@@ -70,10 +71,10 @@ public final class IOUtil {
 
     /**
      * Quietly closes the reader.
-     * <p/>
-     * This avoids having to handle exceptions, and then inside of the exception
-     * handling have a try catch block to close the reader and catch any
-     * {@link IOException} which may be thrown and ignore it.
+     *
+     * <p>This avoids having to handle exceptions, and then inside of the
+     * exception handling have a try catch block to close the reader and catch
+     * any {@link IOException} which may be thrown and ignore it.
      *
      * @param reader
      *            Reader to close
@@ -90,10 +91,10 @@ public final class IOUtil {
 
     /**
      * Quietly closes the stream.
-     * <p/>
-     * This avoids having to handle exceptions, and then inside of the exception
-     * handling have a try catch block to close the stream and catch any
-     * {@link IOException} which may be thrown.
+     *
+     * <p>This avoids having to handle exceptions, and then inside of the
+     * exception handling have a try catch block to close the stream and catch
+     * any {@link IOException} which may be thrown.
      *
      * @param stream
      *            Stream to close
@@ -110,10 +111,10 @@ public final class IOUtil {
 
     /**
      * Quietly closes the writer.
-     * <p/>
-     * This avoids having to handle exceptions, and then inside of the exception
-     * handling have a try catch block to close the Writer and catch any
-     * {@link IOException} which may be thrown.
+     *
+     * <p>This avoids having to handle exceptions, and then inside of the
+     * exception handling have a try catch block to close the Writer and catch
+     * any {@link IOException} which may be thrown.
      *
      * @param writer
      *            Writer to close
@@ -130,10 +131,10 @@ public final class IOUtil {
 
     /**
      * Quietly closes the stream.
-     * <p/>
-     * This avoids having to handle exceptions, and then inside of the exception
-     * handling have a try catch block to close the stream and catch any
-     * {@link IOException} which may be thrown.
+     *
+     * <p>This avoids having to handle exceptions, and then inside of the
+     * exception handling have a try catch block to close the stream and catch
+     * any {@link IOException} which may be thrown.
      *
      * @param stream
      *            Stream to close
@@ -150,10 +151,10 @@ public final class IOUtil {
 
     /**
      * Quietly closes the statement.
-     * <p/>
-     * This avoids having to handle exceptions, and then inside of the exception
-     * handling have a try catch block to close the statement and catch any
-     * {@link SQLException} which may be thrown.
+     *
+     * <p>This avoids having to handle exceptions, and then inside of the
+     * exception handling have a try catch block to close the statement and
+     * catch any {@link SQLException} which may be thrown.
      *
      * @param stmt
      *            Statement to close
@@ -171,10 +172,10 @@ public final class IOUtil {
 
     /**
      * Quietly closes the connection.
-     * <p/>
-     * This avoids having to handle exceptions, and then inside of the exception
-     * handling have a try catch block to close the connection and catch any
-     * {@link SQLException} which may be thrown.
+     *
+     * <p>This avoids having to handle exceptions, and then inside of the
+     * exception handling have a try catch block to close the connection and
+     * catch any {@link SQLException} which may be thrown.
      *
      * @param conn
      *            Connection to close
@@ -192,10 +193,10 @@ public final class IOUtil {
 
     /**
      * Quietly closes the resultset.
-     * <p/>
-     * This avoids having to handle exceptions, and then inside of the exception
-     * handling have a try catch block to close the connection and catch any
-     * {@link SQLException} which may be thrown.
+     *
+     * <p>This avoids having to handle exceptions, and then inside of the
+     * exception handling have a try catch block to close the connection and
+     * catch any {@link SQLException} which may be thrown.
      *
      * @param resultset
      *            ResultSet to close

@@ -12,8 +12,8 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015-2016 ForgeRock AS.
+ * Portions Copyright 2018 Wren Security.
  */
-
 package org.forgerock.openicf.framework.remote;
 
 import java.math.BigInteger;
@@ -169,8 +169,8 @@ public class SecurityUtil {
 
     /**
      * Load a class with a given name.
-     * <p/>
-     * It will try to load the class in the following order:
+     *
+     * <p>It will try to load the class in the following order:
      * <ul>
      * <li>From Thread.currentThread().getContextClassLoader()
      * <li>Using the basic Class.forName()
