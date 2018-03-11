@@ -105,7 +105,7 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/WrenSecurity/WrenIDM/issues</url>
+        <url>https://github.com/WrenSecurity/wrenicf-java-framework/issues</url>
     </issueManagement>
 
     <properties>
