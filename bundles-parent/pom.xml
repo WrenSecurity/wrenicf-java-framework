@@ -179,6 +179,8 @@
                             <link>http://groovy.codehaus.org/api/</link>
                             <link>http://openicf.forgerock.org/apidocs/</link>
                         </links>
+
+                        <additionalparam>-Xdoclint:none</additionalparam>
                     </configuration>
                 </plugin>
                 <!--plugin>
@@ -374,6 +376,8 @@
                         <link>http://groovy.codehaus.org/api/</link>
                         <link>http://openicf.forgerock.org/apidocs/</link>
                     </links>
+
+                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
             </plugin>
         </plugins>
