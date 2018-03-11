@@ -91,6 +91,21 @@
                 <enabled>true</enabled>
             </releases>
         </repository>
+
+        <!-- FIXME: Temporary until `commons-bom-21.0.0-alpha-23` can be built from 
+                    source. -->
+        <repository>
+            <id>wrensecurity-forgerock-archive</id>
+            <name>Wren Security Archive for Verified ForgeRock Artifacts</name>
+            <url>http://dl.bintray.com/wrensecurity/forgerock-archive</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>        
     </repositories>
 
     <mailingLists>
@@ -110,7 +125,7 @@
 
     <properties>
         <!-- Version management -->
-        <commons.commons-bom.version>21.0.0-alpha-12</commons.commons-bom.version>
+        <commons.commons-bom.version>21.0.0-alpha-23</commons.commons-bom.version>
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.5</maven.compiler.target>
         <maven.compiler.source>1.5</maven.compiler.source>
