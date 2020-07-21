@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.forgerock.openicf.framework</groupId>
         <artifactId>framework</artifactId>
-        <version>1.5.2.1-SNAPSHOT</version>
+        <version>1.5.2.1</version>
     </parent>
 
     <artifactId>connector-framework</artifactId>

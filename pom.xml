@@ -34,7 +34,7 @@
 
     <groupId>org.forgerock.openicf.framework</groupId>
     <artifactId>framework</artifactId>
-    <version>1.5.2.1-SNAPSHOT</version>
+    <version>1.5.2.1</version>
     <packaging>pom</packaging>
 
     <name>Wren:ICF</name>
@@ -74,7 +74,7 @@
         <url>https://github.com/WrenSecurity/wrenicf-java-framework</url>
         <connection>scm:git:git://github.com/WrenSecurity/wrenicf-java-framework.git</connection>
         <developerConnection>scm:git:git@github.com:WrenSecurity/wrenicf-java-framework.git</developerConnection>
-      <tag>sustaining/1.5.2.x</tag>
+      <tag>1.5.2.1</tag>
   </scm>
 
     <repositories>
