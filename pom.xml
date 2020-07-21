@@ -27,14 +27,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.forgerock</groupId>
-        <artifactId>forgerock-parent</artifactId>
-        <version>2.0.4</version>
+        <groupId>org.wrensecurity</groupId>
+        <artifactId>wrensec-parent</artifactId>
+        <version>3.0.1</version>
     </parent>
 
     <groupId>org.forgerock.openicf.framework</groupId>
     <artifactId>framework</artifactId>
-    <version>1.5.2.0</version>
+    <version>1.5.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Wren:ICF</name>
@@ -110,7 +110,7 @@
 
     <properties>
         <!-- Version management -->
-        <commons.commons-bom.version>21.0.0-alpha-12</commons.commons-bom.version>
+        <commons.commons-bom.version>22.0.0</commons.commons-bom.version>
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.5</maven.compiler.target>
         <maven.compiler.source>1.5</maven.compiler.source>
@@ -124,7 +124,7 @@
         </openicf.osgi.remove.headers>
 
         <openicf.maven.plugin.version>1.5.0</openicf.maven.plugin.version>
-        <slf4j.version>1.7.12</slf4j.version>
+        <slf4j.version>1.7.23</slf4j.version>
         <logback.version>1.1.7</logback.version>
         <groovy.version>2.2.2</groovy.version>
         <grizzly.version>2.3.22</grizzly.version>
