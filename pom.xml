@@ -74,7 +74,8 @@
         <url>https://github.com/WrenSecurity/wrenicf-java-framework</url>
         <connection>scm:git:git://github.com/WrenSecurity/wrenicf-java-framework.git</connection>
         <developerConnection>scm:git:git@github.com:WrenSecurity/wrenicf-java-framework.git</developerConnection>
-    </scm>
+      <tag>sustaining/1.5.2.x</tag>
+  </scm>
 
     <repositories>
         <!-- Needed to retrieve parent POM -->
