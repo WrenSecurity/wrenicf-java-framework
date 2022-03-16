@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+    The contents of this file are subject to the terms of the Common Development and
+    Distribution License (the License). You may not use this file except in compliance with the
+    License.
 
- Copyright (c) 2010-2015 ForgeRock AS. All rights reserved.
- Portions Copyright 2017 Wren Security.
+    You can obtain a copy of the License at legal/CDDLv1.1.txt. See the License for the
+    specific language governing permission and limitations under the License.
 
- The contents of this file are subject to the terms
- of the Common Development and Distribution License
- (the License). You may not use this file except in
- compliance with the License.
+    When distributing Covered Software, include this CDDL Header Notice in each file and include
+    the License file at legal/CDDLv1.1.txt. If applicable, add the following below the CDDL
+    Header, with the fields enclosed by brackets [] replaced by your own identifying
+    information: "Portions copyright [year] [name of copyright owner]".
 
- You can obtain a copy of the License at
- http://forgerock.org/license/CDDLv1.0.html
- See the License for the specific language governing
- permission and limitations under the License.
-
- When distributing Covered Code, include this CDDL
- Header Notice in each file and include the License file
- at http://forgerock.org/license/CDDLv1.0.html
- If applicable, add the following below the CDDL Header,
- with the fields enclosed by brackets [] replaced by
- your own identifying information:
- "Portions Copyrighted [year] [name of copyright owner]"
+    Copyright (c) 2010-2015 ForgeRock AS. All rights reserved.
+    Portions Copyright 2017-2022 Wren Security.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.wrensecurity</groupId>
         <artifactId>wrensec-parent</artifactId>
-        <version>3.0.1</version>
+        <version>3.2.1</version>
     </parent>
 
     <groupId>org.forgerock.openicf.framework</groupId>
@@ -74,8 +66,8 @@
         <url>https://github.com/WrenSecurity/wrenicf-java-framework</url>
         <connection>scm:git:git://github.com/WrenSecurity/wrenicf-java-framework.git</connection>
         <developerConnection>scm:git:git@github.com:WrenSecurity/wrenicf-java-framework.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <repositories>
         <!-- Needed to retrieve parent POM -->
@@ -90,6 +82,20 @@
 
             <releases>
                 <enabled>true</enabled>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>wrensecurity-snapshots</id>
+            <name>Wren Security Snapshot Repository</name>
+            <url>https://wrensecurity.jfrog.io/wrensecurity/snapshots</url>
+
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+
+            <releases>
+                <enabled>false</enabled>
             </releases>
         </repository>
     </repositories>
@@ -111,10 +117,7 @@
 
     <properties>
         <!-- Version management -->
-        <commons.commons-bom.version>22.0.0</commons.commons-bom.version>
-        <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.5</maven.compiler.target>
-        <maven.compiler.source>1.5</maven.compiler.source>
+        <commons.commons-bom.version>22.1.1</commons.commons-bom.version>
         <framework.compatibilityVersion>1.5</framework.compatibilityVersion>
         <framework.releaseVersion>1.0</framework.releaseVersion>
         <licenseResourceBundle>org.forgerock.openicf:openicf-license:1.3.0</licenseResourceBundle>
@@ -135,20 +138,11 @@
         <frDocPluginVersion>3.1.0</frDocPluginVersion>
         <docTargetVersion>${project.version}</docTargetVersion>
         <googleAnalyticsAccountId />
-        <!--
-            Release date is specified only when building the documentation
-            for publication. For example:
-                -D"releaseDate=Software release date: January 1, 1970"
-            Otherwise release date should remain empty.
-        -->
         <releaseDate />
         <softwareReleaseDate>${releaseDate}</softwareReleaseDate>
         <pubDate />
         <publicationDate>${pubDate}</publicationDate>
-        <!--
-        <publishedDocBase>http://docs.forgerock.org/en/</publishedDocBase>
-        <forgerockSite>http://forgerock.com</forgerockSite>
-        -->
+
         <!-- Doc Branding -->
         <brandingGroupId>org.forgerock.commons</brandingGroupId>
         <brandingArtifactId>forgerock-doc-default-branding</brandingArtifactId>
@@ -160,6 +154,11 @@
         <module>connector-test-common</module>
         <module>connector-framework-internal</module>
         <module>connector-framework-osgi</module>
+        <module>connector-framework-protobuf</module>
+        <module>connector-framework-rpc</module>
+        <module>connector-framework-server</module>
+        <module>connector-server-jetty</module>
+        <module>connector-server-grizzly</module>
         <module>testcommonv1</module>
         <module>testcommonv2</module>
         <module>testbundlev1</module>
@@ -170,79 +169,6 @@
     </modules>
 
     <profiles>
-        <profile>
-            <id>1.5.profile</id>
-
-            <properties>
-                <!-- forgerock-build-tools stylesheet org/forgerock/javadoc/javadoc.css
-                does not work with JDK7 -->
-                <javadocStylesheet>org/forgerock/javadoc/javadoc.css</javadocStylesheet>
-            </properties>
-
-            <activation>
-                <jdk>1.5</jdk>
-            </activation>
-        </profile>
-
-        <profile>
-            <id>1.6.profile</id>
-
-            <properties>
-                <!-- forgerock-build-tools stylesheet org/forgerock/javadoc/javadoc.css
-                does not work with JDK7 -->
-                <javadocStylesheet>org/forgerock/javadoc/javadoc.css</javadocStylesheet>
-            </properties>
-
-            <modules>
-                <module>connector-framework-protobuf</module>
-                <module>connector-framework-rpc</module>
-                <module>connector-framework-server</module>
-                <module>connector-server-grizzly</module>
-            </modules>
-
-            <activation>
-                <jdk>1.6</jdk>
-            </activation>
-        </profile>
-
-        <profile>
-            <id>1.7.profile</id>
-
-            <modules>
-                <module>connector-framework-protobuf</module>
-                <module>connector-framework-rpc</module>
-                <module>connector-framework-server</module>
-                <module>connector-server-jetty</module>
-                <module>connector-server-grizzly</module>
-            </modules>
-
-            <activation>
-                <jdk>1.7</jdk>
-            </activation>
-        </profile>
-
-        <profile>
-            <id>1.8.profile</id>
-
-            <properties>
-                <!-- forgerock-build-tools stylesheet org/forgerock/javadoc/javadoc.css
-                does not work with JDK7 -->
-                <javadocStylesheet>org/forgerock/javadoc/javadoc.css</javadocStylesheet>
-            </properties>
-
-            <modules>
-                <module>connector-framework-protobuf</module>
-                <module>connector-framework-rpc</module>
-                <module>connector-framework-server</module>
-                <module>connector-server-jetty</module>
-                <module>connector-server-grizzly</module>
-            </modules>
-
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-        </profile>
-
         <profile>
             <id>forgerock-release</id>
 
@@ -268,7 +194,6 @@
                         <configuration>
                             <mavenExecutorId>forked-path</mavenExecutorId>
                             <autoVersionSubmodules>true</autoVersionSubmodules>
-                            <!-- mvn clean install -pl connector-framework -am -->
                             <!--
                                 To fix the circular dependencies the actual
                                 artifacts should be available for the other
@@ -431,7 +356,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-remote-resources-plugin</artifactId>
-                <version>1.5</version>
 
                 <executions>
                     <execution>
@@ -453,7 +377,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.3</version>
 
                 <executions>
                     <execution>
@@ -507,15 +430,10 @@
                             <report>dependency-convergence</report>
                             <report>dependency-info</report>
                             <report>dependency-management</report>
-                            <!--<report>distribution-management</report>-->
                             <report>index</report>
                             <report>issue-tracking</report>
                             <report>license</report>
                             <report>mailing-list</report>
-                            <!--<report>modules</report>
-                            <report>plugin-management</report>
-                            <report>plugins</report>
-                            <report>project-team</report>-->
                             <report>scm</report>
                             <report>summary</report>
                         </reports>
