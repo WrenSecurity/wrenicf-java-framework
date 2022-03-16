@@ -45,6 +45,8 @@ public abstract class AbstractConfiguration implements Configuration {
         connectorMessages = messages;
     }
 
+    public abstract void validate();
+
     public final void addChangeCallback(final ConfigurationChangeCallback handler) {
         if (null != callback){
             throw new IllegalStateException("Configuration change update handler has been set");
@@ -61,4 +63,5 @@ public abstract class AbstractConfiguration implements Configuration {
             }
         }
     }
+
 }
