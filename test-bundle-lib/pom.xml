@@ -25,53 +25,25 @@
         <relativePath>../framework-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>icfl-over-slf4j</artifactId>
+    <artifactId>test-bundle-lib</artifactId>
 
-    <name>Wren:ICF - Framework - SLF4J Logging Provider</name>
-    <description>
-        Provides connectors with pre-configured, built-in logging provided by the Simple Logging
-        Facade for Java.
-    </description>
-
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>connector-framework-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Provided Dependencies -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <name>Wren:ICF - Test Library</name>
+    <description>This library is used as dependency in test connector bundles.</description>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
+                <artifactId>maven-site-plugin</artifactId>
 
                 <configuration>
-                    <instructions>
-                        <Export-Package>!*</Export-Package>
-                        <Fragment-Host>org.wrensecurity.wrenicf.framework.connector-framework-core</Fragment-Host>
-                    </instructions>
+                    <generateReports>false</generateReports>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+
+                <configuration combine.self="override">
                 </configuration>
             </plugin>
         </plugins>

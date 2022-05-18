@@ -25,13 +25,10 @@
         <relativePath>../framework-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>icfl-over-slf4j</artifactId>
+    <artifactId>connector-framework-test</artifactId>
 
-    <name>Wren:ICF - Framework - SLF4J Logging Provider</name>
-    <description>
-        Provides connectors with pre-configured, built-in logging provided by the Simple Logging
-        Facade for Java.
-    </description>
+    <name>Wren:ICF - Framework Test Library</name>
+    <description>Provides common helper classes to simplify the testing of connectors.</description>
 
     <dependencies>
         <dependency>
@@ -40,39 +37,32 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Provided Dependencies -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
         </dependency>
 
-        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.2</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
-
+    
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
 
-                <configuration>
-                    <instructions>
-                        <Export-Package>!*</Export-Package>
-                        <Fragment-Host>org.wrensecurity.wrenicf.framework.connector-framework-core</Fragment-Host>
-                    </instructions>
-                </configuration>
+                <!-- Default JAR is not OSGi, do not inherit parent configuration -->
+                <executions combine.self="override">
+                </executions>
             </plugin>
         </plugins>
     </build>

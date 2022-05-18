@@ -25,12 +25,12 @@
         <relativePath>../framework-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>icfl-over-slf4j</artifactId>
+    <artifactId>connector-framework-osgi</artifactId>
 
-    <name>Wren:ICF - Framework - SLF4J Logging Provider</name>
+    <name>Wren:ICF - Framework OSGi</name>
     <description>
-        Provides connectors with pre-configured, built-in logging provided by the Simple Logging
-        Facade for Java.
+        This package provides the appropriate wrapper interfaces and logic to run the framework inside
+        an OSGi container without the connector bundle having to interface with OSGi directly.
     </description>
 
     <dependencies>
@@ -40,24 +40,27 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>connector-framework-internal</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-extender</artifactId>
+        </dependency>
+
         <!-- Provided Dependencies -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.core</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -69,8 +72,7 @@
 
                 <configuration>
                     <instructions>
-                        <Export-Package>!*</Export-Package>
-                        <Fragment-Host>org.wrensecurity.wrenicf.framework.connector-framework-core</Fragment-Host>
+                        <Bundle-Activator>org.forgerock.openicf.framework.impl.api.osgi.internal.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>
