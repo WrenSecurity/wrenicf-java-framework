@@ -18,6 +18,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- XXX This should be connector-parent -->
     <parent>
         <groupId>org.wrensecurity.wrenicf.framework</groupId>
         <artifactId>connector-framework-parent</artifactId>
@@ -25,12 +26,13 @@
         <relativePath>../framework-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>icfl-over-slf4j</artifactId>
+    <artifactId>test-bundle-v2</artifactId>
+    <packaging>bundle</packaging>
 
-    <name>Wren:ICF - Framework - SLF4J Logging Provider</name>
+    <name>Wren:ICF - Test Bundle v2</name>
     <description>
-        Provides connectors with pre-configured, built-in logging provided by the Simple Logging
-        Facade for Java.
+        This bundle provides tests in other packages with a way to assert that failures when loading
+        Connectors are handled gracefully.
     </description>
 
     <dependencies>
@@ -40,24 +42,9 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Provided Dependencies -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <scope>test</scope>
+            <groupId>org.mozilla</groupId>
+            <artifactId>rhino-engine</artifactId>
         </dependency>
     </dependencies>
 
@@ -66,12 +53,38 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
 
                 <configuration>
                     <instructions>
-                        <Export-Package>!*</Export-Package>
-                        <Fragment-Host>org.wrensecurity.wrenicf.framework.connector-framework-core</Fragment-Host>
+                        <!-- http://www.osgi.org/Specifications/Reference -->
+                        <Bundle-NativeCode>
+                            native/native.dll;osname=Win32;processor=x86,
+                            native/libnative.so;osname=Linux;processor=x86,
+                            native/libnative.jnilib;osname=MacOSX;processor=x86,
+                            native/libnative.jnilib;osname=MacOSX;processor=ppc
+                        </Bundle-NativeCode>
+
+                        <ConnectorBundle-FrameworkVersion>1.0</ConnectorBundle-FrameworkVersion>
+                        <ConnectorBundle-Name>testbundlev2</ConnectorBundle-Name>
+                        <ConnectorBundle-Version>2.0.0.0</ConnectorBundle-Version>
                     </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+
+                <configuration>
+                    <generateReports>false</generateReports>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

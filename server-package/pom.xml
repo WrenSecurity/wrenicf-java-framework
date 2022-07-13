@@ -25,54 +25,79 @@
         <relativePath>../framework-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>icfl-over-slf4j</artifactId>
+    <artifactId>connector-server-package</artifactId>
+    <packaging>pom</packaging>
 
-    <name>Wren:ICF - Framework - SLF4J Logging Provider</name>
+    <name>Wren:ICF - Java ZIP</name>
     <description>
-        Provides connectors with pre-configured, built-in logging provided by the Simple Logging
-        Facade for Java.
+        Packages up the Java-based Wren:ICF Connector framework into a single ZIP archive, ready for
+        distribution.
     </description>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>connector-framework-core</artifactId>
+            <artifactId>connector-framework-internal</artifactId>
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Provided Dependencies -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>connector-server-grizzly</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <scope>test</scope>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>icfl-over-slf4j</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mozilla</groupId>
+            <artifactId>rhino-engine</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
     <build>
+        <finalName>wrenicf-${project.version}</finalName>
+
         <plugins>
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
 
                 <configuration>
-                    <instructions>
-                        <Export-Package>!*</Export-Package>
-                        <Fragment-Host>org.wrensecurity.wrenicf.framework.connector-framework-core</Fragment-Host>
-                    </instructions>
+                    <appendAssemblyId>false</appendAssemblyId>
+
+                    <descriptors>
+                        <descriptor>src/assembly/zip.xml</descriptor>
+                    </descriptors>
                 </configuration>
+
+                <executions>
+                    <execution>
+                        <id>zip-assembly</id>
+                        <phase>package</phase>
+
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

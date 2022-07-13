@@ -15,7 +15,7 @@
     Copyright (c) 2010-2015 ForgeRock AS. All rights reserved.
     Portions Copyright 2017-2022 Wren Security.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -25,52 +25,51 @@
         <relativePath>../framework-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>icfl-over-slf4j</artifactId>
+    <artifactId>connector-framework-core</artifactId>
 
-    <name>Wren:ICF - Framework - SLF4J Logging Provider</name>
+    <name>Wren:ICF - Framework Core</name>
     <description>
-        Provides connectors with pre-configured, built-in logging provided by the Simple Logging
-        Facade for Java.
+        The Identity Connectors Framework Core defines a common interface and shared code that simplifies
+        each Connector bundle and allows it to operate with the same code across several versions of
+        the same identity applications.
     </description>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>connector-framework-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Provided Dependencies -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Test Dependencies -->
-        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <scope>test</scope>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>build-test-jar</id>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
 
                 <configuration>
                     <instructions>
-                        <Export-Package>!*</Export-Package>
-                        <Fragment-Host>org.wrensecurity.wrenicf.framework.connector-framework-core</Fragment-Host>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <_noclassforname>true</_noclassforname>
                     </instructions>
                 </configuration>
             </plugin>
