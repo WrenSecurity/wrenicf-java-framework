@@ -20,11 +20,14 @@
  * with the fields enclosed by brackets [] replaced by
  * your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
+ *
+ * Portions Copyrighted 2022 Wren Security
  */
 
 package org.forgerock.openicf.common.rpc.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 
@@ -37,7 +40,7 @@ public abstract class TestRemoteRequest<H extends RemoteConnectionHolder<TestCon
         extends
         RemoteRequest<String, Exception, TestConnectionGroup<H>, H, TestConnectionContext<H>> {
 
-    protected final List<String> results = new ArrayList<String>();
+    protected final List<String> results = Collections.synchronizedList(new ArrayList<String>());
 
     public TestRemoteRequest(
             TestConnectionContext<H> context,
@@ -46,14 +49,17 @@ public abstract class TestRemoteRequest<H extends RemoteConnectionHolder<TestCon
         super(context, requestId, completionCallback);
     }
 
+    @Override
     public boolean check() {
         return false;
     }
 
+    @Override
     public void inconsistent() {
 
     }
 
+    @Override
     public void handleIncomingMessage(H sourceConnection, Object incomeMessage) {
         if (incomeMessage instanceof TestMessage) {
             TestMessage message = (TestMessage) incomeMessage;
@@ -68,6 +74,7 @@ public abstract class TestRemoteRequest<H extends RemoteConnectionHolder<TestCon
         }
     }
 
+    @Override
     public TestConnectionContext<H> getConnectionContext() {
         return super.getConnectionContext();
     }
@@ -79,6 +86,7 @@ public abstract class TestRemoteRequest<H extends RemoteConnectionHolder<TestCon
         sourceConnection.sendString(remoteContext.write(testMessage, requestId));
     }
 
+    @Override
     protected MessageElement createMessageElement(TestConnectionContext<H> remoteContext,
             long requestId) {
         TestMessage message = getTestMessage();
@@ -90,6 +98,7 @@ public abstract class TestRemoteRequest<H extends RemoteConnectionHolder<TestCon
     protected abstract void handle(H sourceConnection, TestRemoteRequest<H> request,
             TestMessage message);
 
+    @Override
     protected void tryCancelRemote(TestConnectionContext<H> remoteContext, long requestId) {
         TestMessage message = new TestMessage();
         message.cancel = Boolean.TRUE;
@@ -97,6 +106,7 @@ public abstract class TestRemoteRequest<H extends RemoteConnectionHolder<TestCon
 
         remoteContext.getRemoteConnectionGroup().trySendMessage(
                 new Function<H, Boolean, Exception>() {
+                    @Override
                     public Boolean apply(H value) throws Exception {
                         value.sendString(data).get();
                         return Boolean.TRUE;
@@ -104,6 +114,7 @@ public abstract class TestRemoteRequest<H extends RemoteConnectionHolder<TestCon
                 });
     }
 
+    @Override
     protected Exception createCancellationException(Throwable cancellationException) {
         if (cancellationException instanceof Exception)
             return (Exception) cancellationException;
