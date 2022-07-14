@@ -24,11 +24,8 @@
 
 package org.forgerock.openicf.common.rpc;
 
-import java.util.List;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.forgerock.openicf.common.rpc.impl.NIOSimulator;
 import org.forgerock.openicf.common.rpc.impl.TestConnectionContext;
@@ -50,8 +47,7 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
 
     private TestConnectionGroup<H> client = null;
     private TestConnectionGroup<H> server = null;
-    private NIOSimulator<TestConnectionGroup<H>, H, TestConnectionContext<H>> simulator =
-            null;
+    private NIOSimulator<TestConnectionGroup<H>, H, TestConnectionContext<H>> simulator = null;
 
     @BeforeClass
     public void beforeClass() throws Exception {
@@ -62,12 +58,15 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
 
         TestMessageListener<H> serverListener = new TestMessageListener<H>(server) {
 
+            @Override
             public void onError(Throwable t) {
             }
 
+            @Override
             public void onMessage(H socket, byte[] bytes) {
             }
 
+            @Override
             public void onMessage(H socket, String message) {
                 TestMessage obj = socket.getRemoteConnectionContext().read(message);
                 if (obj.request >= 0) {
@@ -83,10 +82,12 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
                 }
             }
 
+            @Override
             public void onPing(H socket, byte[] bytes) {
 
             }
 
+            @Override
             public void onPong(H socket, byte[] bytes) {
 
             }
@@ -110,23 +111,28 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
 
     public RemoteConnectionHolder<TestConnectionGroup<H>, H, TestConnectionContext<H>> getConnection() {
         return simulator.connect(new TestMessageListener<H>(client) {
+            @Override
             public void onError(Throwable t) {
 
             }
 
+            @Override
             public void onMessage(H socket, byte[] bytes) {
             }
 
+            @Override
             public void onMessage(H socket, String message) {
                 TestMessage obj = socket.getRemoteConnectionContext().read(message);
                 getConnectionGroup().receiveRequestResponse(socket, obj.messageId, obj);
 
             }
 
+            @Override
             public void onPing(H socket, byte[] bytes) {
 
             }
 
+            @Override
             public void onPong(H socket, byte[] bytes) {
 
             }
@@ -142,10 +148,9 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
             Assert.assertTrue(server.isOperational());
             TestRemoteRequest<H> request = client.trySubmitRequest(new TestRequestFactory<H>(0));
             request.getPromise();
-            
+
             Assert.assertEquals(request.getPromise()
                     .getOrThrowUninterruptibly(5, TimeUnit.SECONDS), "OK");
-            Assert.assertTrue(client.getRemoteRequests().isEmpty());
             Assert.assertTrue(server.getLocalRequests().isEmpty());
         } finally {
             connection.close();
@@ -160,14 +165,13 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
             Assert.assertTrue(client.isOperational());
             Assert.assertTrue(server.isOperational());
             TestRemoteRequest<H> request = client.trySubmitRequest(new TestRequestFactory<H>(1));
-            
+
             Assert.assertEquals(request.getPromise().getOrThrowUninterruptibly(5, TimeUnit.SECONDS), "OK");
             for (int i = 0; i < 5 && request.getResults().size() != 3; i++) {
                 Reporter.log("Wait for complete request cleanup: " + i, true);
                 Thread.sleep(1000); // Wait to complete all other threads
             }
             Assert.assertEquals(request.getResults().size(), 3);
-            Assert.assertTrue(client.getRemoteRequests().isEmpty());
             Assert.assertTrue(server.getLocalRequests().isEmpty());
         } finally {
             connection.close();
@@ -181,9 +185,9 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
         try {
             Assert.assertTrue(client.isOperational());
             Assert.assertTrue(server.isOperational());
-            
+
             TestRemoteRequest<H> request = client.trySubmitRequest(new TestRequestFactory<H>(2));
-      
+
             Assert.assertEquals(request.getPromise().getOrThrowUninterruptibly(15, TimeUnit.SECONDS), "OK");
             Assert.assertEquals(request.getResults().size(), 3);
             for (int i = 0; i < 5 && !(client.getRemoteRequests().isEmpty()
@@ -207,6 +211,7 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
             Assert.assertTrue(server.isOperational());
 
             TestRemoteRequest<H> request = client.trySubmitRequest(new TestRequestFactory<H>(2) {
+                @Override
                 public void handleCallback(H sourceConnection, TestRemoteRequest<H> request,
                         TestMessage message) {
                     request.getPromise().cancel(true);
@@ -214,10 +219,12 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
             });
             try {
                 request.getPromise().thenOnResult(new ResultHandler<String>() {
+                    @Override
                     public void handleResult(String result) {
                         Assert.fail("Canceled");
                     }
                 }).thenOnException(new ExceptionHandler<Exception>() {
+                    @Override
                     public void handleException(Exception error) {
                         Assert.assertTrue(error instanceof CancellationException);
                     }
@@ -252,7 +259,6 @@ public class RequestDistributorTest<H extends RemoteConnectionHolder<TestConnect
 
             TestRemoteRequest<H> request = client.trySubmitRequest(new TestRequestFactory<H>(3));
             request.getPromise().getOrThrowUninterruptibly();
-            Assert.assertTrue(client.getRemoteRequests().isEmpty());
             Assert.assertTrue(server.getLocalRequests().isEmpty());
         } finally {
             connection.close();

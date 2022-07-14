@@ -46,10 +46,12 @@ public class TestConnectionGroup<H extends RemoteConnectionHolder<TestConnection
         super(remoteSessionId);
     }
 
+    @Override
     public TestConnectionContext<H> getRemoteConnectionContext() {
         return connectionContext;
     }
 
+    @Override
     public boolean isOperational() {
         return webSockets.size() > 0;
     }
@@ -59,7 +61,7 @@ public class TestConnectionGroup<H extends RemoteConnectionHolder<TestConnection
     }
 
     public void removeConnection(H socket) {
-        webSockets.remove(socket);
+        webSockets.remove(Pair.of("name", socket));
     }
 
     public Set<Long> getRemoteRequests() {
@@ -70,6 +72,7 @@ public class TestConnectionGroup<H extends RemoteConnectionHolder<TestConnection
         return localRequests.keySet();
     }
 
+    @Override
     public void close() throws IOException {
         for (Map.Entry<Long, RemoteRequest<?, ?, TestConnectionGroup<H>, H, TestConnectionContext<H>>> m : remoteRequests
                 .entrySet()) {

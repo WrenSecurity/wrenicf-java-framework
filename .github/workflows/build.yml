@@ -23,4 +23,4 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Run the Maven verify phase
         # Skip tests because of https://github.com/WrenSecurity/wrenicf-java-framework/issues/4
-        run: mvn -B verify --file pom.xml -DskipTests
+        run: mvn -B verify --file pom.xml
