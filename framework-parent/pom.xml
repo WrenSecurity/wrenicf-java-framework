@@ -35,7 +35,7 @@
     <properties>
         <pgpVerifyKeysVersion>1.6.1</pgpVerifyKeysVersion>
 
-        <commons-bom.version>22.1.1</commons-bom.version>
+        <commons-bom.version>22.2.0</commons-bom.version>
         <grizzly.version>2.3.22</grizzly.version>
         <groovy.version>2.4.21</groovy.version>
         <logback.version>1.1.7</logback.version>
@@ -48,7 +48,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.forgerock.commons</groupId>
+                <groupId>org.wrensecurity.commons</groupId>
                 <artifactId>commons-bom</artifactId>
                 <version>${commons-bom.version}</version>
                 <scope>import</scope>
