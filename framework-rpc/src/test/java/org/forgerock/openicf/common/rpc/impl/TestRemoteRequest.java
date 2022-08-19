@@ -25,6 +25,7 @@
 package org.forgerock.openicf.common.rpc.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 
@@ -37,7 +38,7 @@ public abstract class TestRemoteRequest<H extends RemoteConnectionHolder<TestCon
         extends
         RemoteRequest<String, Exception, TestConnectionGroup<H>, H, TestConnectionContext<H>> {
 
-    protected final List<String> results = new ArrayList<String>();
+    protected final List<String> results = Collections.synchronizedList(new ArrayList<String>());
 
     public TestRemoteRequest(
             TestConnectionContext<H> context,
