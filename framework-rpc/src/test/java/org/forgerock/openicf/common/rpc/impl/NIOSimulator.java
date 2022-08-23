@@ -20,6 +20,8 @@
  * with the fields enclosed by brackets [] replaced by
  * your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
+ *
+ * Portions Copyrighted 2022 Wren Security
  */
 
 package org.forgerock.openicf.common.rpc.impl;
@@ -27,14 +29,15 @@ package org.forgerock.openicf.common.rpc.impl;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.forgerock.openicf.common.rpc.MessageListener;
 import org.forgerock.openicf.common.rpc.RemoteConnectionContext;
@@ -43,140 +46,168 @@ import org.forgerock.openicf.common.rpc.RemoteConnectionHolder;
 import org.testng.Reporter;
 
 @SuppressWarnings("unchecked")
-public class NIOSimulator<G extends RemoteConnectionGroup<G, H, P>, H extends RemoteConnectionHolder<G, H, P>, P extends RemoteConnectionContext<G, H, P>>
-        implements Closeable {
+public class NIOSimulator<
+        G extends RemoteConnectionGroup<G, H, P>,
+        H extends RemoteConnectionHolder<G, H, P>,
+        P extends RemoteConnectionContext<G, H, P>
+    > implements Closeable, Runnable {
+
+    private static final AtomicInteger SELECTOR_COUNTER = new AtomicInteger();
+
+    private static final AtomicLong CONNECTION_COUNTER = new AtomicLong();
 
     private final MessageListener<G, H, P> serverListener;
-    private final Future<?> processorFuture;
-    private final List<RemoteConnectionHolder<G, H, P>> connections =
-            new CopyOnWriteArrayList<RemoteConnectionHolder<G, H, P>>();
+
+    private final Thread selectorThread = new Thread(this, "nios-selector-" + SELECTOR_COUNTER.incrementAndGet());
+
+    private final ExecutorService workerService = Executors.newFixedThreadPool(10);
+
+    private final List<RemoteConnectionHolderImpl> connections = new CopyOnWriteArrayList<>();
 
     public NIOSimulator(MessageListener<G, H, P> serverListener) {
         this.serverListener = serverListener;
-        processorFuture = executorService.submit(new Runnable() {
-            public void run() {
+        selectorThread.start();
+    }
+
+    @Override
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
+            boolean processed = false;
+            for (RemoteConnectionHolderImpl connection : connections) {
+                if (connection.messageQueue.isEmpty()) {
+                    continue;
+                }
+                boolean available = connection.workerLock.compareAndSet(false, true);
+                if (available) {
+                    processed = true;
+                    workerService.submit(() -> {
+                       try {
+                           Runnable message = connection.messageQueue.poll();
+                           if (message == null || !connection.active.get()) {
+                               return;
+                           }
+                           message.run();
+                       } finally {
+                           connection.workerLock.set(false);
+                       }
+                    });
+                }
+            }
+            if (!processed) {
                 try {
-                    while (!Thread.currentThread().isInterrupted()) {
-                        executorService.submit(queue.take());
-                    }
+                    Thread.sleep(5);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
-        });
+        }
     }
-
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
-    private final BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
 
     public RemoteConnectionHolder<G, H, P> connect(
             final MessageListener<G, H, P> clientListener, P serverContext, P clientContext) {
-        RemoteConnectionHolderImpl connection =
-                new RemoteConnectionHolderImpl(serverListener, clientListener, serverContext,
-                        clientContext);
-        connections.add(connection);
-        return connection;
+        return new RemoteConnectionHolderImpl(serverListener, clientListener, serverContext, clientContext);
     }
 
+    @Override
     public void close() throws IOException {
-        for (RemoteConnectionHolder<G, H, P> o : connections) {
-            o.close();
+        for (RemoteConnectionHolderImpl connection: connections) {
+            connection.close();
         }
-        processorFuture.cancel(true);
-        queue.clear();
-        executorService.shutdownNow();
+        selectorThread.interrupt();
+        workerService.shutdownNow();
     }
 
     public class RemoteConnectionHolderImpl implements RemoteConnectionHolder<G, H, P> {
 
-        private final H reverseConnection;
+        private final long id = CONNECTION_COUNTER.incrementAndGet();
+
+        private final RemoteConnectionHolderImpl reverseConnection;
+
         private final P context;
+
         private final MessageListener<G, H, P> remoteListener;
-        private AtomicBoolean active = new AtomicBoolean(true);
+
+        private final AtomicBoolean active = new AtomicBoolean(true);
+
+        private final ExecutorService submitQueue = Executors.newFixedThreadPool(1, task -> new Thread(task, "nios-connection-" + id));
+
+        private final Queue<Runnable> messageQueue = new ConcurrentLinkedQueue<>();
+
+        private final AtomicBoolean workerLock = new AtomicBoolean();
 
         public RemoteConnectionHolderImpl(final MessageListener<G, H, P> serverListener,
                 final MessageListener<G, H, P> clientListener, P serverContext, P clientContext) {
-            reverseConnection =
-                    (H) new RemoteConnectionHolderImpl((H) this, clientListener, serverContext);
+            reverseConnection = new RemoteConnectionHolderImpl(this, clientListener, serverContext);
             remoteListener = serverListener;
             context = clientContext;
-            remoteListener.onConnect(reverseConnection);
+            connections.add(this);
+            remoteListener.onConnect((H) reverseConnection);
             clientListener.onConnect((H) this);
         }
 
-        public RemoteConnectionHolderImpl(H reverseConnection,
+        public RemoteConnectionHolderImpl(RemoteConnectionHolderImpl reverseConnection,
                 MessageListener<G, H, P> clientListener, P serverContext) {
             this.reverseConnection = reverseConnection;
             remoteListener = clientListener;
             context = serverContext;
+            connections.add(this);
         }
 
+        @Override
         public P getRemoteConnectionContext() {
             return context;
         }
 
+        @Override
         public Future<?> sendBytes(final byte[] data) {
-            return getExecutorService().submit(new Callable<Void>() {
-                public Void call() throws Exception {
-                    if (active.get()) {
-                        queue.offer(new Runnable() {
-                            public void run() {
-                                getMessageListener().onMessage(getReverseConnection(), data);
-                            }
-                        });
-                    } else {
-                        throw new IOException("Simulated Connection is Closed");
-                    }
-                    return null;
+            return submitQueue.submit(() -> {
+                if (active.get()) {
+                    messageQueue.offer(() -> getMessageListener().onMessage(getReverseConnection(), data));
+                } else {
+                    throw new IOException("Simulated Connection is Closed");
                 }
+                return null;
             });
         }
 
+        @Override
         public Future<?> sendString(final String data) {
-            return getExecutorService().submit(new Callable<Void>() {
-                public Void call() throws Exception {
-                    if (active.get()) {
-                        queue.offer(new Runnable() {
-                            public void run() {
-                                getMessageListener().onMessage(getReverseConnection(), data);
-                            }
-                        });
-                    } else {
-                        Reporter.log("Simulated Connection is Closed");
-                        throw new IOException("Simulated Connection is Closed");
-                    }
-                    return null;
+            return submitQueue.submit(() -> {
+                if (active.get()) {
+                    messageQueue.offer(() -> getMessageListener().onMessage(getReverseConnection(), data));
+                } else {
+                    Reporter.log("Simulated Connection is Closed");
+                    throw new IOException("Simulated Connection is Closed");
                 }
+                return null;
             });
         }
 
+        @Override
         public void sendPing(final byte[] applicationData) throws Exception {
-            getExecutorService().submit(new Callable<Void>() {
-                public Void call() throws Exception {
-                    if (active.get()) {
-                        getMessageListener().onPing(getReverseConnection(), applicationData);
-
-                    } else {
-                        throw new IOException("Simulated Connection is Closed");
-                    }
-                    return null;
+            submitQueue.submit(() -> {
+                if (active.get()) {
+                    getMessageListener().onPing(getReverseConnection(), applicationData);
+                } else {
+                    throw new IOException("Simulated Connection is Closed");
                 }
+                return null;
             }).get();
         }
 
+        @Override
         public void sendPong(final byte[] applicationData) throws Exception {
-            getExecutorService().submit(new Callable<Void>() {
-                public Void call() throws Exception {
-                    if (active.get()) {
-                        getMessageListener().onPong(getReverseConnection(), applicationData);
-                    } else {
-                        throw new IOException("Simulated Connection is Closed");
-                    }
-                    return null;
+            submitQueue.submit(() -> {
+                if (active.get()) {
+                    getMessageListener().onPong(getReverseConnection(), applicationData);
+                } else {
+                    throw new IOException("Simulated Connection is Closed");
                 }
+                return null;
             }).get();
         }
 
+        @Override
         public void close() {
             if (active.compareAndSet(true, false)) {
                 tryClose();
@@ -186,21 +217,19 @@ public class NIOSimulator<G extends RemoteConnectionGroup<G, H, P>, H extends Re
         protected void tryClose() {
             connections.remove(this);
             reverseConnection.close();
-            ((RemoteConnectionHolderImpl) reverseConnection).getMessageListener().onClose((H) this,
-                    100, "Connection Closed");
+            submitQueue.shutdownNow();
+            messageQueue.clear();
+            reverseConnection.getMessageListener().onClose((H) this, 100, "Connection Closed");
         }
 
         protected H getReverseConnection() {
-            return reverseConnection;
+            return (H) reverseConnection;
         }
 
         protected MessageListener<G, H, P> getMessageListener() {
             return remoteListener;
         }
 
-        protected ExecutorService getExecutorService() {
-            return executorService;
-        }
     }
 
 }

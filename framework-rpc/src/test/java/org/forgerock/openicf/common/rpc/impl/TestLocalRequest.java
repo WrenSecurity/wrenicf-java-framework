@@ -20,6 +20,8 @@
  * with the fields enclosed by brackets [] replaced by
  * your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
+ *
+ * Portions Copyrighted 2022 Wren Security
  */
 
 package org.forgerock.openicf.common.rpc.impl;
@@ -41,14 +43,17 @@ public class TestLocalRequest<H extends RemoteConnectionHolder<TestConnectionGro
         super(requestId, socket);
     }
 
+    @Override
     public boolean check() {
         return false;
     }
 
+    @Override
     public void inconsistent() {
 
     }
 
+    @Override
     public boolean tryHandleResult(String result) {
         TestMessage remoteMessage = new TestMessage();
         remoteMessage.response = result;
@@ -56,6 +61,7 @@ public class TestLocalRequest<H extends RemoteConnectionHolder<TestConnectionGro
 
         return getRemoteConnectionContext().getRemoteConnectionGroup().trySendMessage(
                 new Function<H, Boolean, Exception>() {
+                    @Override
                     public Boolean apply(H value) throws Exception {
                         value.sendString(message).get();
                         return Boolean.TRUE;
@@ -81,6 +87,7 @@ public class TestLocalRequest<H extends RemoteConnectionHolder<TestConnectionGro
             connection =
                     getRemoteConnectionContext().getRemoteConnectionGroup().trySendMessage(
                             new Function<H, H, Exception>() {
+                                @Override
                                 public H apply(H value) throws Exception {
                                     value.sendString(message).get();
                                     return value;
@@ -92,6 +99,7 @@ public class TestLocalRequest<H extends RemoteConnectionHolder<TestConnectionGro
         }
     }
 
+    @Override
     public boolean tryHandleError(Exception error) {
         TestMessage remoteMessage = new TestMessage();
         remoteMessage.exception = error.getMessage();
@@ -99,6 +107,7 @@ public class TestLocalRequest<H extends RemoteConnectionHolder<TestConnectionGro
 
         return Boolean.TRUE.equals(getRemoteConnectionContext().getRemoteConnectionGroup()
                 .trySendMessage(new Function<H, Boolean, Exception>() {
+                    @Override
                     public Boolean apply(H value) throws Exception {
                         value.sendString(message).get();
                         return Boolean.TRUE;
@@ -106,6 +115,7 @@ public class TestLocalRequest<H extends RemoteConnectionHolder<TestConnectionGro
                 }));
     }
 
+    @Override
     public boolean tryCancel() {
         cancelled = true;
         return true;
@@ -119,32 +129,20 @@ public class TestLocalRequest<H extends RemoteConnectionHolder<TestConnectionGro
         }
         case 1: {
             callbackMessage("Result0");
+            callbackMessage("Result1");
             callbackMessage("Result2");
-            callbackMessage("Result3");
             handleResult("OK");
             break;
         }
         case 2: {
-            synchronized (this) {
-                callbackMessage("Result0");
-                this.wait(3000, 0);
-            }
-            if (cancelled) {
-                return;
-            }
-            synchronized (this) {
-                callbackMessage("Result2");
-                this.wait(3000, 0);
-            }
-            if (cancelled) {
-                return;
-            }
-            synchronized (this) {
-                callbackMessage("Result3");
-                this.wait(3000, 0);
-            }
-            if (cancelled) {
-                return;
+            for (int i = 0; i < 3; i++) {
+                callbackMessage("Result" + i);
+                synchronized (this) {
+                    this.wait(1000, 0);
+                }
+                if (cancelled) {
+                    return;
+                }
             }
             handleResult("OK");
             break;
@@ -154,6 +152,7 @@ public class TestLocalRequest<H extends RemoteConnectionHolder<TestConnectionGro
         }
     }
 
+    @Override
     public void handleIncomingMessage(H sourceConnection, Object incommingMessage) {
         if (incommingMessage instanceof TestMessage) {
             TestMessage message = (TestMessage) incommingMessage;
