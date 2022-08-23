@@ -63,9 +63,9 @@ import org.testng.annotations.Test;
 public class AsyncRemotePlainConnectorInfoManagerTest extends
         AsyncConnectorInfoManagerTestBase<DelegatingAsyncConnectorInfoManager> {
 
-    public final int PLAIN_PORT = findFreePort();
-    public final int SECURE_PORT = findFreePort();
-    public final int MUTUAL_SECURE_PORT = findFreePort();
+    public static final int PLAIN_PORT = findFreePort();
+    public static final int SECURE_PORT = findFreePort();
+    public static final int MUTUAL_SECURE_PORT = findFreePort();
 
     public final RemoteWSFrameworkConnectionInfo CONNECTION_INFO =
             buildRemoteWSFrameworkConnectionInfo(false, PLAIN_PORT);
@@ -94,10 +94,12 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
     protected static ReferenceCountedObject<ConnectorFramework>.Reference localConnectorFramework = null;
     private static ReferenceCountedObject<ConnectorFramework>.Reference serverConnectorFramework = null;
 
+    @Override
     protected ConnectorFrameworkFactory getConnectorFrameworkFactory() throws Exception {
         return localConnectorFrameworkFactory;
     }
 
+    @Override
     protected DelegatingAsyncConnectorInfoManager getConnectorInfoManager() throws Exception {
         return getConnectorFramework().getRemoteManager(CONNECTION_INFO);
     }
@@ -138,6 +140,7 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
         return sh;
     }
 
+    @Override
     protected void setupTest(ITestContext context) throws Exception {
         Reporter.log(String.format("HTTP:%d, HTTPS:%d , HTTPS(Mutual):%d", PLAIN_PORT, SECURE_PORT,
                 MUTUAL_SECURE_PORT), true);
@@ -222,6 +225,7 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
         connectorServer.start();
     }
 
+    @Override
     protected void shutdownTest(ITestContext context) throws Exception {
         connectorServer.stop();
         connectorServer.destroy();

@@ -36,7 +36,7 @@
         <pgpVerifyKeysVersion>1.6.1</pgpVerifyKeysVersion>
 
         <commons-bom.version>22.2.0</commons-bom.version>
-        <grizzly.version>2.3.22</grizzly.version>
+        <grizzly.version>2.3.35</grizzly.version>
         <groovy.version>2.4.21</groovy.version>
         <logback.version>1.1.7</logback.version>
         <protobuf-java.version>3.0.2</protobuf-java.version>
