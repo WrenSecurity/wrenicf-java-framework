@@ -13,7 +13,7 @@
     information: "Portions copyright [year] [name of copyright owner]".
 
     Copyright (c) 2010-2015 ForgeRock AS. All rights reserved.
-    Portions Copyright 2017-2022 Wren Security.
+    Portions Copyright 2017-2025 Wren Security.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -167,14 +167,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-
-                    <configuration>
-                        <links>
-                            <link>http://download.oracle.com/javase/8/docs/api/</link>
-                            <link>http://docs.groovy-lang.org/latest/html/api/</link>
-                            <link>http://openicf.forgerock.org/apidocs/</link>
-                        </links>
-                    </configuration>
                 </plugin>
 
                 <!-- XXX FIXME
