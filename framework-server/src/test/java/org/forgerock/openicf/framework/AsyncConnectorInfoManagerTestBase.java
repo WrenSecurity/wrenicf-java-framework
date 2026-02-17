@@ -93,9 +93,8 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action1;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 @Test
 public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnectorInfoManager> {
@@ -682,59 +681,38 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
         final AtomicReference<Throwable> assertionError = new AtomicReference<Throwable>(null);
 
         Observable<ConnectorObject> connectorObjectObservable =
-                Observable.create(new Observable.OnSubscribe<ConnectorObject>() {
-                    @Override
-                    public void call(final Subscriber<? super ConnectorObject> subscriber) {
+                Observable.<ConnectorObject>create(emitter -> {
+                    final Subscription subscription =
+                            facade.subscribe(ObjectClass.ACCOUNT, null,
+                                    new Observer<ConnectorObject>() {
+                                        @Override
+                                        public void onCompleted() {
+                                            emitter.onComplete();
+                                        }
 
-                        final Subscription subscription =
-                                facade.subscribe(ObjectClass.ACCOUNT, null,
-                                        new Observer<ConnectorObject>() {
-                                            @Override
-                                            public void onCompleted() {
-                                                subscriber.onCompleted();
-                                            }
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            emitter.onError(e);
+                                        }
 
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                subscriber.onError(e);
-                                            }
-
-                                            @Override
-                                            public void onNext(ConnectorObject connectorObject) {
-                                                subscriber.onNext(connectorObject);
-                                            }
-                                        }, null);
-
-                        subscriber.add(new rx.Subscription() {
-                            @Override
-                            public void unsubscribe() {
-                                subscription.close();
-                            }
-
-                            @Override
-                            public boolean isUnsubscribed() {
-                                return subscription.isUnsubscribed();
-                            }
-                        });
-                    }
+                                        @Override
+                                        public void onNext(ConnectorObject connectorObject) {
+                                            emitter.onNext(connectorObject);
+                                        }
+                                    }, null);
+                    emitter.setCancellable(() -> subscription.close());
                 });
-        final rx.Subscription[] subscription = new rx.Subscription[1];
-        subscription[0] = connectorObjectObservable.subscribe(new Action1<ConnectorObject>() {
-            @Override
-            public void call(ConnectorObject connectorObject) {
-                Reporter.log("Connector Event received:" + connectorObject.getUid(), true);
-                handler.handle(connectorObject);
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                try {
-                    Assert.assertEquals(handler.getObjects().size(), 10, "Uncompleted subscription");
-                } catch (final Exception t) {
-                    assertionError.set(t);
-                } finally {
-                    latch.countDown();
-                }
+        final Disposable[] disposable = new Disposable[1];
+        disposable[0] = connectorObjectObservable.subscribe(connectorObject -> {
+            Reporter.log("Connector Event received:" + connectorObject.getUid(), true);
+            handler.handle(connectorObject);
+        }, throwable -> {
+            try {
+                Assert.assertEquals(handler.getObjects().size(), 10, "Uncompleted subscription");
+            } catch (final Exception t) {
+                assertionError.set(t);
+            } finally {
+                latch.countDown();
             }
         });
 
@@ -755,66 +733,46 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
         final OperationOptionsBuilder optionsBuilder = new OperationOptionsBuilder();
         optionsBuilder.setOption("eventCount", 1500);
         Observable<SyncDelta> syncDeltaObservable =
-                Observable.create(new Observable.OnSubscribe<SyncDelta>() {
-                    @Override
-                    public void call(final Subscriber<? super SyncDelta> subscriber) {
-                        final Subscription subscription =
-                                facade.subscribe(ObjectClass.ACCOUNT, null,
-                                        new Observer<SyncDelta>() {
-                                            @Override
-                                            public void onCompleted() {
-                                                subscriber.onCompleted();
-                                            }
+                Observable.<SyncDelta>create(emitter -> {
+                    final Subscription subscription =
+                            facade.subscribe(ObjectClass.ACCOUNT, null,
+                                    new Observer<SyncDelta>() {
+                                        @Override
+                                        public void onCompleted() {
+                                            emitter.onComplete();
+                                        }
 
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                subscriber.onError(e);
-                                            }
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            emitter.onError(e);
+                                        }
 
-                                            @Override
-                                            public void onNext(SyncDelta syncDelta) {
-                                                subscriber.onNext(syncDelta);
-                                            }
-                                        }, optionsBuilder.build());
-
-                        subscriber.add(new rx.Subscription() {
-                            @Override
-                            public void unsubscribe() {
-                                subscription.close();
-                            }
-
-                            @Override
-                            public boolean isUnsubscribed() {
-                                return subscription.isUnsubscribed();
-                            }
-                        });
-                    }
+                                        @Override
+                                        public void onNext(SyncDelta syncDelta) {
+                                            emitter.onNext(syncDelta);
+                                        }
+                                    }, optionsBuilder.build());
+                    emitter.setCancellable(() -> subscription.close());
                 });
 
-        subscription[0] = syncDeltaObservable.subscribe(new Action1<SyncDelta>() {
-            @Override
-            public void call(SyncDelta delta) {
-                Reporter.log("Sync Event received:" + delta.getToken(), true);
-                handler.handle(delta.getObject());
-                if (((Integer) delta.getToken().getValue()) > 2) {
-                    try {
-                        subscription[0].unsubscribe();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    syncLatch.countDown();
-                }
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
+        disposable[0] = syncDeltaObservable.subscribe(delta -> {
+            Reporter.log("Sync Event received:" + delta.getToken(), true);
+            handler.handle(delta.getObject());
+            if (((Integer) delta.getToken().getValue()) > 2) {
                 try {
-                    assertionError.set(throwable);
-                } catch (final Exception t) {
-                    assertionError.set(t);
-                } finally {
-                    latch.countDown();
+                    disposable[0].dispose();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                syncLatch.countDown();
+            }
+        }, throwable -> {
+            try {
+                assertionError.set(throwable);
+            } catch (final Exception t) {
+                assertionError.set(t);
+            } finally {
+                latch.countDown();
             }
         });
         syncLatch.await(25, TimeUnit.SECONDS);
