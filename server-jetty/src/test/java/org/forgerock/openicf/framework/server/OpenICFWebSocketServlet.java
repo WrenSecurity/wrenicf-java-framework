@@ -24,8 +24,7 @@
 
 package org.forgerock.openicf.framework.server;
 
-import javax.servlet.annotation.WebServlet;
-
+import jakarta.servlet.annotation.WebServlet;
 import org.forgerock.openicf.framework.server.jetty.OpenICFWebSocketServletBase;
 
 @WebServlet(name = "OpenICF WebSocket Servlet", urlPatterns = { "/openicf" })

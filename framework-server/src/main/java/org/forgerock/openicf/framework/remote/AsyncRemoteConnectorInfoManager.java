@@ -26,9 +26,6 @@ package org.forgerock.openicf.framework.remote;
 
 import java.io.Closeable;
 import java.io.IOException;
-
-import org.forgerock.guava.common.base.Function;
-import org.forgerock.guava.common.collect.FluentIterable;
 import org.forgerock.openicf.common.rpc.RequestDistributor;
 import org.forgerock.openicf.framework.DelegatingAsyncConnectorInfoManager;
 import org.forgerock.openicf.framework.async.AsyncConnectorInfoManager;
@@ -37,6 +34,8 @@ import org.forgerock.openicf.framework.remote.rpc.RemoteOperationContext;
 import org.forgerock.openicf.framework.remote.rpc.WebSocketConnectionGroup;
 import org.forgerock.openicf.framework.remote.rpc.WebSocketConnectionHolder;
 import org.identityconnectors.common.logging.Log;
+import org.wrensecurity.guava.common.base.Function;
+import org.wrensecurity.guava.common.collect.FluentIterable;
 
 
 /**
@@ -72,6 +71,7 @@ public class AsyncRemoteConnectorInfoManager extends DelegatingAsyncConnectorInf
                                 .from(loadBalancingAlgorithmFactory.getAsyncRemoteConnectorInfoManager())
                                 .transform(
                                         new Function<AsyncRemoteConnectorInfoManager, RequestDistributor<WebSocketConnectionGroup, WebSocketConnectionHolder, RemoteOperationContext>>() {
+                                            @Override
                                             public RequestDistributor<WebSocketConnectionGroup, WebSocketConnectionHolder, RemoteOperationContext> apply(AsyncRemoteConnectorInfoManager value) {
                                                 return value.getMessageDistributor();
                                             }
@@ -88,10 +88,12 @@ public class AsyncRemoteConnectorInfoManager extends DelegatingAsyncConnectorInf
         }
     }
 
+    @Override
     protected RequestDistributor<WebSocketConnectionGroup, WebSocketConnectionHolder, RemoteOperationContext> getMessageDistributor() {
         return messageDistributor;
     }
 
+    @Override
     protected void doClose() {
         if (null != remoteCloseable) {
             try {

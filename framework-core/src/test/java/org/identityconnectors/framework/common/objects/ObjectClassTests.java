@@ -22,7 +22,7 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.identityconnectors.framework.common.objects.LocaleTestUtil.resetLocaleCache;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -31,7 +31,6 @@ import static org.testng.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

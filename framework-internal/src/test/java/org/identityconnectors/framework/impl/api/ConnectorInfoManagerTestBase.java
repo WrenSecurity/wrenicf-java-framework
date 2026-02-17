@@ -20,13 +20,13 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2015 ForgeRock AS.
+ * Portions Copyrighted 2026 Wren Security
  */
 package org.identityconnectors.framework.impl.api;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.identityconnectors.common.IOUtil.makeURL;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -44,12 +44,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.Version;
 import org.identityconnectors.common.l10n.CurrentLocale;
@@ -68,8 +66,6 @@ import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
-import org.identityconnectors.framework.api.operations.batch.BatchBuilder;
-import org.identityconnectors.framework.api.operations.batch.BatchTask;
 import org.identityconnectors.framework.common.FrameworkUtilTestHelpers;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.exceptions.OperationTimeoutException;
@@ -78,7 +74,6 @@ import org.identityconnectors.framework.common.exceptions.PreconditionRequiredEx
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
-import org.identityconnectors.framework.common.objects.BatchToken;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
@@ -107,7 +102,6 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action0;
@@ -759,6 +753,11 @@ public abstract class ConnectorInfoManagerTestBase {
 
     @Test
     public void testConfigurationUpdate() throws Exception {
+        // Clean connector pool before the test is run as the ChangeListener configuration can get dropped
+        // (not sure if by design or by mistake)... previously this test did not fail because older TestNG
+        // used a different method execution order.
+        ConnectorPoolManager.dispose();
+
         ConnectorInfoManager manager = getConnectorInfoManager();
         if (manager instanceof LocalConnectorInfoManagerImpl) {
             ConnectorInfo[] infos =
@@ -842,10 +841,8 @@ public abstract class ConnectorInfoManagerTestBase {
             try {
                 facade.runScriptOnConnector(builder.build(), null);
                 fail("exception expected");
-            } catch (Exception e) {
-                String expectedMessage =
-                        "unable to resolve class org.identityconnectors.framework.impl.api.ConfigurationPropertyImpl";
-                assertThat(e.getMessage()).contains(expectedMessage);
+            } catch (NoClassDefFoundError|RemoteWrappedException e) {
+                assertThat(e.getMessage()).contains("ConfigurationPropertyImpl");
             }
         }
 

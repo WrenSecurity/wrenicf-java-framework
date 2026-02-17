@@ -12,11 +12,11 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 package org.forgerock.openicf.framework.server;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
@@ -24,11 +24,16 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee10.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
-import org.eclipse.jetty.security.MappedLoginService;
+import org.eclipse.jetty.security.Constraint;
+import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -37,11 +42,6 @@ import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
-import org.eclipse.jetty.server.UserIdentity;
-import org.eclipse.jetty.servlet.BaseHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.forgerock.openicf.framework.AsyncConnectorInfoManagerTestBase;
@@ -104,9 +104,9 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
         return getConnectorFramework().getRemoteManager(CONNECTION_INFO);
     }
 
-    private SecurityHandler getSecurityHandler() throws IOException {
-        Constraint constraint = new Constraint(Constraint.__BASIC_AUTH, "websocket");
-        constraint.setAuthenticate(true);
+    private SecurityHandler getSecurityHandler() {
+        Constraint constraint = Constraint.from("websocket",
+                Constraint.Authorization.SPECIFIC_ROLE, "websocket");
 
         ConstraintMapping cm = new ConstraintMapping();
         cm.setPathSpec("/openicf/*");
@@ -116,26 +116,17 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
         sh.setAuthenticator(new BasicAuthenticator());
         sh.setConstraintMappings(Arrays.asList(new ConstraintMapping[] { cm }));
 
-        MappedLoginService loginService = new MappedLoginService() {
+        UserStore userStore = new UserStore();
+        Credential credential = Credential.getCredential(DEFAULT_PASSWORD);
+        String[] roles = new String[] { "websocket" };
+        userStore.addUser("plain", credential, roles);
+        userStore.addUser("secure", credential, roles);
+        userStore.addUser("proxy", credential, roles);
+        userStore.addUser("anonymous", credential, roles);
 
-            @Override
-            protected UserIdentity loadUser(String username) {
-                return null;
-            }
-
-            @Override
-            protected void loadUsers() throws IOException {
-                Credential credential = Credential.getCredential(DEFAULT_PASSWORD);
-                String[] roles = new String[] { "websocket" };
-                putUser("plain", credential, roles);
-                putUser("secure", credential, roles);
-                putUser("proxy", credential, roles);
-                putUser("anonymous", credential, roles);
-            }
-        };
-        loginService.setName("OpenICF-Service");
+        HashLoginService loginService = new HashLoginService();
+        loginService.setUserStore(userStore);
         sh.setLoginService(loginService);
-        sh.setConstraintMappings(Arrays.asList(new ConstraintMapping[] { cm }));
 
         return sh;
     }
@@ -160,7 +151,7 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
         http.setIdleTimeout(30000);
 
         // HTTPS
-        SslContextFactory sslContextFactory = createSsllContextFactory(false);
+        SslContextFactory.Server sslContextFactory = createSslContextFactory(false);
 
         // HTTPS Configuration
         HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
@@ -175,7 +166,7 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
         https.setIdleTimeout(500000);
 
         // Mutual HTTPS connector
-        sslContextFactory = createSsllContextFactory(false);
+        sslContextFactory = createSslContextFactory(false);
         sslContextFactory.setWantClientAuth(true);
         sslContextFactory.setNeedClientAuth(false);
 
@@ -190,15 +181,15 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
 
         // Initializing the security handler
         ServletContextHandler handler =
-                new ServletContextHandler(connectorServer, "/", ServletContextHandler.SESSIONS
-                        | ServletContextHandler.SECURITY);
+                new ServletContextHandler("/", ServletContextHandler.SESSIONS);
 
-        ServletHolder holder =
-                handler.getServletHandler().newServletHolder(BaseHolder.Source.EMBEDDED);
+        JettyWebSocketServletContainerInitializer.configure(handler, null);
 
         serverConnectorFramework = serverConnectorFrameworkFactory.acquire();
         localConnectorFramework = localConnectorFrameworkFactory.acquire();
-        holder.setServlet(new OpenICFWebSocketServletBase(serverConnectorFrameworkFactory));
+
+        ServletHolder holder = new ServletHolder(
+                new OpenICFWebSocketServletBase(serverConnectorFrameworkFactory));
         holder.setInitParameter("maxIdleTime", "300000");
         holder.setInitParameter("maxAsyncWriteTimeout", "60000");
 
@@ -207,10 +198,9 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
 
         handler.addServlet(holder, "/openicf/*");
 
-        SecurityHandler sh = getSecurityHandler();
-        sh.setHandler(handler);
+        handler.setSecurityHandler(getSecurityHandler());
 
-        connectorServer.setHandler(sh);
+        connectorServer.setHandler(handler);
         connectorServer.start();
         Reporter.log("Jetty Server Started", true);
 
@@ -221,8 +211,6 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
 
         localConnectorFramework.get().getLocalManager().addConnectorBundle(
                 TstConnector.class.getProtectionDomain().getCodeSource().getLocation());
-
-        connectorServer.start();
     }
 
     @Override
@@ -235,8 +223,8 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
         Reporter.log("Jetty Server Stopped", true);
     }
 
-    private SslContextFactory createSsllContextFactory(boolean clientContext) {
-        final SslContextFactory sslContextFactory = new SslContextFactory(false);
+    private SslContextFactory.Server createSslContextFactory(boolean clientContext) {
+        final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
 
         URL keystoreURL =
                 AsyncRemotePlainConnectorInfoManagerTest.class.getClassLoader().getResource(
@@ -266,7 +254,7 @@ public class AsyncRemotePlainConnectorInfoManagerTest extends
         sslContextFactory.setKeyStorePath(serverKeystoreFile);
         sslContextFactory.setKeyStorePassword(JSK_PASSWORD);
 
-        sslContextFactory.setIncludeProtocols("TLSv1.2", "TLSv1.1", "TLSv1");
+        sslContextFactory.setIncludeProtocols("TLSv1.3", "TLSv1.2");
 
         return sslContextFactory;
     }

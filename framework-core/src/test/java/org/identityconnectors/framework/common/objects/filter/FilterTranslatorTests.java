@@ -22,12 +22,11 @@
  */
 package org.identityconnectors.framework.common.objects.filter;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Index.atIndex;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.atIndex;
 import static org.testng.Assert.assertEquals;
 
 import java.util.List;
-
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.testng.annotations.Test;

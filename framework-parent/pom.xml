@@ -12,7 +12,7 @@
     Header, with the fields enclosed by brackets [] replaced by your own identifying
     information: "Portions copyright [year] [name of copyright owner]".
 
-    Copyright 2022 Wren Security
+    Copyright 2022-2026 Wren Security
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -33,47 +33,75 @@
     </description>
 
     <properties>
-        <pgpVerifyKeysVersion>1.6.1</pgpVerifyKeysVersion>
+        <pgpVerifyKeysVersion>1.9.7</pgpVerifyKeysVersion>
 
-        <commons-bom.version>22.2.0</commons-bom.version>
-        <grizzly.version>2.3.35</grizzly.version>
-        <groovy.version>2.4.21</groovy.version>
-        <logback.version>1.1.7</logback.version>
-        <protobuf-java.version>3.0.2</protobuf-java.version>
-        <rhino.version>1.7.14</rhino.version>
-        <slf4j.version>1.7.23</slf4j.version>
-        <testng.version>6.9.10</testng.version>
+        <logback.version>1.5.32</logback.version>
+        <protobuf-java.version>3.25.8</protobuf-java.version>
+        <testng.version>7.8.0</testng.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.wrensecurity.commons</groupId>
-                <artifactId>commons-bom</artifactId>
-                <version>${commons-bom.version}</version>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>2.20.2</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
 
             <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy-all</artifactId>
-                <version>${groovy.version}</version>
-                <scope>provided</scope>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-bom</artifactId>
+                <version>5.0.4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>3.19.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>grizzly-bom</artifactId>
+                <version>4.0.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-bom</artifactId>
+                <version>12.1.6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-bom</artifactId>
+                <version>12.1.6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wrensecurity.commons</groupId>
+                <artifactId>commons-bom</artifactId>
+                <version>23.0.0-M2</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
 
             <dependency>
                 <groupId>org.mozilla</groupId>
                 <artifactId>rhino-engine</artifactId>
-                <version>${rhino.version}</version>
+                <version>1.7.14</version>
                 <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.testng</groupId>
-                <artifactId>testng</artifactId>
-                <version>${testng.version}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -89,12 +117,18 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- XXX deprecate / replace with either Hamcrest or AssertJ -->
             <dependency>
-                <groupId>org.easytesting</groupId>
-                <artifactId>fest-assert</artifactId>
-                <version>1.4</version>
-                <scope>test</scope>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-bom</artifactId>
+                <version>2.0.17</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -158,6 +192,14 @@
                         </configuration>
                     </execution>
                 </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.wrensecurity.wrenicf</groupId>
+                        <artifactId>license</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
