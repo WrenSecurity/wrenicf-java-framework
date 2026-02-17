@@ -33,7 +33,7 @@
     </description>
 
     <properties>
-        <pgpVerifyKeysVersion>1.9.7</pgpVerifyKeysVersion>
+        <pgpVerifyKeysVersion>1.9.8</pgpVerifyKeysVersion>
 
         <logback.version>1.5.32</logback.version>
         <protobuf-java.version>3.25.8</protobuf-java.version>
