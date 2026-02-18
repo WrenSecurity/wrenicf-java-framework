@@ -113,6 +113,26 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+
+                <configuration>
+                    <acceptPomPackaging>true</acceptPomPackaging>
+                    <excludedGroups>^org\.wrensecurity\.</excludedGroups>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                    
+                        <goals>
+                            <goal>add-third-party</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

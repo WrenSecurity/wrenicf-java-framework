@@ -68,12 +68,11 @@
             <directory>${project.build.directory}/licenseResource</directory>
             <outputDirectory>/wrenicf/</outputDirectory>
          </fileSet>
-         <!-- Include the Forgerock binary license file if exists -->
          <fileSet>
-            <directory>${project.build.directory}</directory>
+            <directory>${project.build.directory}/generated-sources/license</directory>
             <outputDirectory>/wrenicf/legal-notices/</outputDirectory>
             <includes>
-               <include>license.txt</include>
+               <include>THIRD-PARTY.txt</include>
             </includes>
          </fileSet>
     </fileSets>
