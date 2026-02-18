@@ -24,12 +24,10 @@
 
 package org.forgerock.openicf.framework;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -46,7 +44,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.forgerock.openicf.framework.async.AsyncConnectorInfoManager;
 import org.forgerock.openicf.framework.client.RemoteWSFrameworkConnectionInfo;
 import org.forgerock.openicf.framework.remote.ReferenceCountedObject;
@@ -96,10 +93,8 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action1;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 @Test
 public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnectorInfoManager> {
@@ -131,12 +126,13 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
         } catch (IOException e) {
             // IGNORE
         } finally {
-            if (null != socket)
+            if (null != socket) {
                 try {
                     socket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
         }
         return -1;
     }
@@ -203,7 +199,7 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
 
     protected abstract T getConnectorInfoManager() throws Exception;
 
-    
+
     public ConnectorKey getTestConnectorKey(){
         return TEST_CONNECTOR_KEY;
     }
@@ -215,7 +211,7 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
     public ConnectorKey getTestPoolableStatefulConnectorKey(){
         return TEST_POOLABLE_STATEFUL_CONNECTOR_KEY;
     }
-    
+
     @Test
     public void testRequiredConnectorInfo() throws Exception {
 
@@ -312,11 +308,12 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
             final AtomicReference<List<ConfigurationProperty>> current =
                     new AtomicReference<List<ConfigurationProperty>>();
             api.setChangeListener(new ConfigurationPropertyChangeListener() {
+                @Override
                 public void configurationPropertyChange(List<ConfigurationProperty> changes) {
                     current.set(changes);
                 }
             });
-            
+
             ConnectorFacade facade = getConnectorFramework().newInstance(api);
 
             ScriptContextBuilder builder = new ScriptContextBuilder();
@@ -362,6 +359,7 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
         SyncToken lastToken =
                 facade.sync(ObjectClass.ACCOUNT, new SyncToken(-1), new SyncResultsHandler() {
 
+                    @Override
                     public boolean handle(SyncDelta delta) {
                         return true;
                     }
@@ -370,6 +368,7 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
         Assert.assertNull(lastToken);
 
         SearchResult searchResult = facade.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+            @Override
             public boolean handle(ConnectorObject connectorObject) {
                 return true;
             }
@@ -445,6 +444,7 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
                 facade.sync(ObjectClass.ACCOUNT, new SyncToken(-1), new SyncResultsHandler() {
                     Integer index = null;
 
+                    @Override
                     public boolean handle(SyncDelta delta) {
                         Integer previous = index;
                         index = (Integer) delta.getToken().getValue();
@@ -681,51 +681,38 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
         final AtomicReference<Throwable> assertionError = new AtomicReference<Throwable>(null);
 
         Observable<ConnectorObject> connectorObjectObservable =
-                Observable.create(new Observable.OnSubscribe<ConnectorObject>() {
-                    public void call(final Subscriber<? super ConnectorObject> subscriber) {
+                Observable.<ConnectorObject>create(emitter -> {
+                    final Subscription subscription =
+                            facade.subscribe(ObjectClass.ACCOUNT, null,
+                                    new Observer<ConnectorObject>() {
+                                        @Override
+                                        public void onCompleted() {
+                                            emitter.onComplete();
+                                        }
 
-                        final Subscription subscription =
-                                facade.subscribe(ObjectClass.ACCOUNT, null,
-                                        new Observer<ConnectorObject>() {
-                                            public void onCompleted() {
-                                                subscriber.onCompleted();
-                                            }
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            emitter.onError(e);
+                                        }
 
-                                            public void onError(Throwable e) {
-                                                subscriber.onError(e);
-                                            }
-
-                                            public void onNext(ConnectorObject connectorObject) {
-                                                subscriber.onNext(connectorObject);
-                                            }
-                                        }, null);
-
-                        subscriber.add(new rx.Subscription() {
-                            public void unsubscribe() {
-                                subscription.close();
-                            }
-
-                            public boolean isUnsubscribed() {
-                                return subscription.isUnsubscribed();
-                            }
-                        });
-                    }
+                                        @Override
+                                        public void onNext(ConnectorObject connectorObject) {
+                                            emitter.onNext(connectorObject);
+                                        }
+                                    }, null);
+                    emitter.setCancellable(() -> subscription.close());
                 });
-        final rx.Subscription[] subscription = new rx.Subscription[1];
-        subscription[0] = connectorObjectObservable.subscribe(new Action1<ConnectorObject>() {
-            public void call(ConnectorObject connectorObject) {
-                Reporter.log("Connector Event received:" + connectorObject.getUid(), true);
-                handler.handle(connectorObject);
-            }
-        }, new Action1<Throwable>() {
-            public void call(Throwable throwable) {
-                try {
-                    Assert.assertEquals(handler.getObjects().size(), 10, "Uncompleted subscription");
-                } catch (final Exception t) {
-                    assertionError.set(t);
-                } finally {
-                    latch.countDown();
-                }
+        final Disposable[] disposable = new Disposable[1];
+        disposable[0] = connectorObjectObservable.subscribe(connectorObject -> {
+            Reporter.log("Connector Event received:" + connectorObject.getUid(), true);
+            handler.handle(connectorObject);
+        }, throwable -> {
+            try {
+                Assert.assertEquals(handler.getObjects().size(), 10, "Uncompleted subscription");
+            } catch (final Exception t) {
+                assertionError.set(t);
+            } finally {
+                latch.countDown();
             }
         });
 
@@ -738,66 +725,54 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
             LocalConnectorFacadeImpl localConnectorFacade = (LocalConnectorFacadeImpl) facade;
             Assert.assertTrue(localConnectorFacade.isUnusedFor(1, TimeUnit.NANOSECONDS));
         }
-        
+
         final CountDownLatch syncLatch = new CountDownLatch(1);
         handler.getObjects().clear();
 
-        
+
         final OperationOptionsBuilder optionsBuilder = new OperationOptionsBuilder();
         optionsBuilder.setOption("eventCount", 1500);
         Observable<SyncDelta> syncDeltaObservable =
-                Observable.create(new Observable.OnSubscribe<SyncDelta>() {
-                    public void call(final Subscriber<? super SyncDelta> subscriber) {
-                        final Subscription subscription =
-                                facade.subscribe(ObjectClass.ACCOUNT, null,
-                                        new Observer<SyncDelta>() {
-                                            public void onCompleted() {
-                                                subscriber.onCompleted();
-                                            }
+                Observable.<SyncDelta>create(emitter -> {
+                    final Subscription subscription =
+                            facade.subscribe(ObjectClass.ACCOUNT, null,
+                                    new Observer<SyncDelta>() {
+                                        @Override
+                                        public void onCompleted() {
+                                            emitter.onComplete();
+                                        }
 
-                                            public void onError(Throwable e) {
-                                                subscriber.onError(e);
-                                            }
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            emitter.onError(e);
+                                        }
 
-                                            public void onNext(SyncDelta syncDelta) {
-                                                subscriber.onNext(syncDelta);
-                                            }
-                                        }, optionsBuilder.build());
-
-                        subscriber.add(new rx.Subscription() {
-                            public void unsubscribe() {
-                                subscription.close();
-                            }
-
-                            public boolean isUnsubscribed() {
-                                return subscription.isUnsubscribed();
-                            }
-                        });
-                    }
+                                        @Override
+                                        public void onNext(SyncDelta syncDelta) {
+                                            emitter.onNext(syncDelta);
+                                        }
+                                    }, optionsBuilder.build());
+                    emitter.setCancellable(() -> subscription.close());
                 });
 
-        subscription[0] = syncDeltaObservable.subscribe(new Action1<SyncDelta>() {
-            public void call(SyncDelta delta) {
-                Reporter.log("Sync Event received:" + delta.getToken(), true);
-                handler.handle(delta.getObject());
-                if (((Integer) delta.getToken().getValue()) > 2) {
-                    try {
-                        subscription[0].unsubscribe();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    syncLatch.countDown();
-                }
-            }
-        }, new Action1<Throwable>() {
-            public void call(Throwable throwable) {
+        disposable[0] = syncDeltaObservable.subscribe(delta -> {
+            Reporter.log("Sync Event received:" + delta.getToken(), true);
+            handler.handle(delta.getObject());
+            if (((Integer) delta.getToken().getValue()) > 2) {
                 try {
-                    assertionError.set(throwable);
-                } catch (final Exception t) {
-                    assertionError.set(t);
-                } finally {
-                    latch.countDown();
+                    disposable[0].dispose();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                syncLatch.countDown();
+            }
+        }, throwable -> {
+            try {
+                assertionError.set(throwable);
+            } catch (final Exception t) {
+                assertionError.set(t);
+            } finally {
+                latch.countDown();
             }
         });
         syncLatch.await(25, TimeUnit.SECONDS);
@@ -823,6 +798,7 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
             final boolean returnNullTest) throws Exception {
         return getConnectorInfoManager().findConnectorInfoAsync(getTestStatefulConnectorKey()).then(
                 new Function<ConnectorInfo, ConnectorFacade, RuntimeException>() {
+                    @Override
                     public ConnectorFacade apply(ConnectorInfo info) throws RuntimeException {
                         APIConfiguration api = info.createDefaultAPIConfiguration();
                         ConfigurationProperties props = api.getConfigurationProperties();
@@ -844,6 +820,7 @@ public abstract class AsyncConnectorInfoManagerTestBase<T extends AsyncConnector
 
         private final List<ConnectorObject> connectorObjects = new ArrayList<ConnectorObject>();
 
+        @Override
         public boolean handle(ConnectorObject object) {
             connectorObjects.add(object);
             return true;

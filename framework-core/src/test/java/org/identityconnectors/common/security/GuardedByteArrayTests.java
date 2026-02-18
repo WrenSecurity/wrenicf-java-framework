@@ -27,11 +27,11 @@ import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import static org.fest.assertions.Assertions.assertThat;
 
 public class GuardedByteArrayTests {
 
@@ -129,6 +129,7 @@ public class GuardedByteArrayTests {
             GuardedByteArray bytes = new GuardedByteArray(new byte[] { (byte) i });
             bytes.access(new GuardedByteArray.Accessor() {
 
+                @Override
                 public void access(byte[] clearBytes) {
                     byte v = clearBytes[0];
                     assertEquals(v, expected);
@@ -145,6 +146,7 @@ public class GuardedByteArrayTests {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         bytes.access(new GuardedByteArray.Accessor() {
 
+            @Override
             public void access(byte[] bytes) {
                 out.write(bytes, 0, bytes.length);
             }

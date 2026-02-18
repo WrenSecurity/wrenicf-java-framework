@@ -13,7 +13,7 @@
     information: "Portions copyright [year] [name of copyright owner]".
 
     Copyright (c) 2010-2015 ForgeRock AS. All rights reserved.
-    Portions Copyright 2017-2025 Wren Security.
+    Portions Copyright 2017-2026 Wren Security.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.wrensecurity.wrenicf</groupId>
         <artifactId>parent</artifactId>
-        <version>1.5.3.3-SNAPSHOT</version>
+        <version>1.5.4.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.wrensecurity.wrenicf.connector</groupId>
@@ -39,7 +39,7 @@
 
         <!-- Connector framework compatibility -->
         <framework.compatibilityVersion>1.5</framework.compatibilityVersion>
-        <framework.releaseVersion>3.0</framework.releaseVersion>
+        <framework.releaseVersion>4.0</framework.releaseVersion>
 
         <!-- These are the properties needed in manifest file of the bundle -->
         <ConnectorBundle-FrameworkVersion>${framework.compatibilityVersion}</ConnectorBundle-FrameworkVersion>
@@ -117,7 +117,14 @@
                 <version>${project.framework.version}</version>
             </dependency>
 
-            <!-- Test Dependencies -->
+            <dependency>
+                <groupId>org.wrensecurity.wrenicf.framework</groupId>
+                <artifactId>connector-framework-core</artifactId>
+                <version>${project.framework.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.wrensecurity.wrenicf.framework</groupId>
                 <artifactId>connector-framework-internal</artifactId>
@@ -129,14 +136,6 @@
                 <groupId>org.wrensecurity.wrenicf.framework</groupId>
                 <artifactId>connector-framework-test</artifactId>
                 <version>${project.framework.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.wrensecurity.wrenicf.framework</groupId>
-                <artifactId>connector-framework-core</artifactId>
-                <version>${project.framework.version}</version>
-                <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
         </dependencies>

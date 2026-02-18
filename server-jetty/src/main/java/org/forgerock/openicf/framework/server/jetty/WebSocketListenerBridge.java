@@ -20,194 +20,168 @@
  * with the fields enclosed by brackets [] replaced by
  * your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
+ *
+ * Portions Copyright 2026 Wren Security.
  */
 package org.forgerock.openicf.framework.server.jetty;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.nio.ByteBuffer;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
-import org.eclipse.jetty.websocket.api.BatchMode;
+import org.eclipse.jetty.websocket.api.Callback;
+import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.StatusCode;
-import org.eclipse.jetty.websocket.api.WebSocketPolicy;
-import org.eclipse.jetty.websocket.api.extensions.Frame;
-import org.eclipse.jetty.websocket.common.CloseInfo;
-import org.eclipse.jetty.websocket.common.events.AbstractEventDriver;
-import org.eclipse.jetty.websocket.common.message.SimpleBinaryMessage;
-import org.eclipse.jetty.websocket.common.message.SimpleTextMessage;
 import org.forgerock.openicf.common.protobuf.RPCMessages;
 import org.forgerock.openicf.framework.remote.ConnectionPrincipal;
 import org.forgerock.openicf.framework.remote.rpc.RemoteOperationContext;
 import org.forgerock.openicf.framework.remote.rpc.WebSocketConnectionHolder;
 import org.forgerock.util.promise.Promises;
 import org.identityconnectors.framework.common.exceptions.ConnectorIOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class WebSocketListenerBridge extends AbstractEventDriver {
+public class WebSocketListenerBridge implements Session.Listener.AutoDemanding {
 
-    private static final Logger logger = Log.getLogger(WebSocketListenerBridge.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketListenerBridge.class);
+
+    private final ConnectionPrincipal<?> connectionPrincipal;
+
+    private volatile Session session;
+
     private boolean hasCloseBeenCalled = false;
 
     private RemoteOperationContext context = null;
 
     private final WebSocketConnectionHolder adapter = new WebSocketConnectionHolder() {
 
+        @Override
         protected void handshake(RPCMessages.HandshakeMessage message) {
-            context = getConnectionPrincipal().handshake(this, message);
+            context = connectionPrincipal.handshake(this, message);
         }
 
+        @Override
         public boolean isOperational() {
-            return getSession().isOpen();
+            return session != null && session.isOpen();
         }
 
+        @Override
         public RemoteOperationContext getRemoteConnectionContext() {
             return context;
         }
 
+        @Override
         public Future<?> sendBytes(byte[] data) {
             if (isOperational()) {
-                return getSession().getRemote().sendBytesByFuture(ByteBuffer.wrap(data));
+                CompletableFuture<Void> future = new CompletableFuture<>();
+                session.sendBinary(ByteBuffer.wrap(data), Callback.from(
+                        () -> future.complete(null),
+                        future::completeExceptionally));
+                return future;
             } else {
                 return Promises.newExceptionPromise(new ConnectorIOException(
                         "Socket is not connected."));
             }
         }
 
+        @Override
         public Future<?> sendString(String data) {
             if (isOperational()) {
-                return getSession().getRemote().sendStringByFuture(data);
+                CompletableFuture<Void> future = new CompletableFuture<>();
+                session.sendText(data, Callback.from(
+                        () -> future.complete(null),
+                        future::completeExceptionally));
+                return future;
             } else {
                 return Promises.newExceptionPromise(new ConnectorIOException(
                         "Socket is not connected."));
             }
         }
 
+        @Override
         public void sendPing(byte[] applicationData) throws Exception {
             if (isOperational()) {
-                getSession().getRemote().sendPing(ByteBuffer.wrap(applicationData));
-                if (getSession().getRemote().getBatchMode() == BatchMode.ON) {
-                    getSession().getRemote().flush();
-                }
+                session.sendPing(ByteBuffer.wrap(applicationData), Callback.NOOP);
             } else {
                 throw new ConnectorIOException("Socket is not connected.");
             }
         }
 
+        @Override
         public void sendPong(byte[] applicationData) throws Exception {
             if (isOperational()) {
-                getSession().getRemote().sendPong(ByteBuffer.wrap(applicationData));
-                if (getSession().getRemote().getBatchMode() == BatchMode.ON) {
-                    getSession().getRemote().flush();
-                }
+                session.sendPong(ByteBuffer.wrap(applicationData), Callback.NOOP);
             } else {
                 throw new ConnectorIOException("Socket is not connected.");
             }
         }
 
+        @Override
         protected void tryClose() {
-            WebSocketListenerBridge.this.terminateConnection(StatusCode.NORMAL, "TEST003");
+            session.close(StatusCode.NORMAL, "TEST003", Callback.NOOP);
         }
 
     };
 
-    public WebSocketListenerBridge(WebSocketPolicy policy, ConnectionPrincipal<?> webSocket) {
-        super(policy, webSocket);
-    }
-
-    protected ConnectionPrincipal<?> getConnectionPrincipal() {
-        return ConnectionPrincipal.class.cast(websocket);
+    public WebSocketListenerBridge(ConnectionPrincipal<?> connectionPrincipal) {
+        this.connectionPrincipal = connectionPrincipal;
     }
 
     @Override
-    public void onBinaryFrame(ByteBuffer buffer, boolean fin) throws IOException {
-        if (activeMessage == null) {
-            activeMessage = new SimpleBinaryMessage(this);
+    public void onWebSocketOpen(Session session) {
+        this.session = session;
+        if (logger.isDebugEnabled()) {
+            logger.debug("Connect from: {}", session.getRemoteSocketAddress());
         }
-
-        appendMessage(buffer, fin);
+        connectionPrincipal.getOperationMessageListener().onConnect(adapter);
     }
 
     @Override
-    public void onBinaryMessage(byte[] data) {
-        logger.debug("onBinaryMessage('" + (null != data ? data.length : 0) + "')");
-        getConnectionPrincipal().getOperationMessageListener().onMessage(adapter, data);
+    public void onWebSocketBinary(ByteBuffer payload, Callback callback) {
+        byte[] data = new byte[payload.remaining()];
+        payload.get(data);
+        logger.debug("onBinaryMessage('{}')", data.length);
+        connectionPrincipal.getOperationMessageListener().onMessage(adapter, data);
+        callback.succeed();
     }
 
     @Override
-    public void onClose(CloseInfo close) {
+    public void onWebSocketText(String message) {
+        logger.debug("onTextMessage('{}')", message);
+        connectionPrincipal.getOperationMessageListener().onMessage(adapter, message);
+    }
+
+    @Override
+    public void onWebSocketClose(int statusCode, String reason, Callback callback) {
         if (hasCloseBeenCalled) {
             // avoid duplicate close events (possible when using harsh
             // Session.disconnect())
+            callback.succeed();
             return;
         }
         hasCloseBeenCalled = true;
-        getConnectionPrincipal().getOperationMessageListener().onClose(adapter,
-                close.getStatusCode(), close.getReason());
+        connectionPrincipal.getOperationMessageListener().onClose(adapter, statusCode, reason);
+        callback.succeed();
     }
 
     @Override
-    public void onConnect() {
-        if (logger.isDebugEnabled())
-            logger.debug("Connect from: " + session.getRemoteAddress());
-        getConnectionPrincipal().getOperationMessageListener().onConnect(adapter);
+    public void onWebSocketPing(ByteBuffer payload) {
+        byte[] b = new byte[payload.remaining()];
+        payload.get(b);
+        connectionPrincipal.getOperationMessageListener().onPing(adapter, b);
     }
 
     @Override
-    public void onPong(ByteBuffer buffer) {
-        byte[] b = new byte[buffer.remaining()];
-        buffer.get(b);
-        getConnectionPrincipal().getOperationMessageListener().onPong(adapter, b);
+    public void onWebSocketPong(ByteBuffer payload) {
+        byte[] b = new byte[payload.remaining()];
+        payload.get(b);
+        connectionPrincipal.getOperationMessageListener().onPong(adapter, b);
     }
 
     @Override
-    public void onPing(ByteBuffer buffer) {
-        byte[] b = new byte[buffer.remaining()];
-        buffer.get(b);
-        getConnectionPrincipal().getOperationMessageListener().onPing(adapter, b);
-    }
-
-    // //
-    @Override
-    public void onError(Throwable t) {
-        /* ignore, not supported by WebSocketListenerAdapter */
-        logger.debug("onError:", t);
-        getConnectionPrincipal().getOperationMessageListener().onError(t);
-    }
-
-    @Override
-    public void onFrame(Frame frame) {
-        /* ignore, not supported by WebSocketListenerAdapter */
-        logger.debug("onFrame");
-    }
-
-    @Override
-    public void onInputStream(InputStream stream) {
-        /* ignore, not supported by WebSocketListenerAdapter */
-        logger.debug("onInputStream");
-    }
-
-    @Override
-    public void onReader(Reader reader) {
-        /* ignore, not supported by WebSocketListenerAdapter */
-        logger.debug("onReader");
-    }
-
-    @Override
-    public void onTextFrame(ByteBuffer buffer, boolean fin) throws IOException {
-        if (activeMessage == null) {
-            activeMessage = new SimpleTextMessage(this);
-        }
-
-        appendMessage(buffer, fin);
-    }
-
-    @Override
-    public void onTextMessage(String message) {
-        logger.debug("onTextMessage('" + message + "')");
-        getConnectionPrincipal().getOperationMessageListener().onMessage(adapter, message);
+    public void onWebSocketError(Throwable cause) {
+        logger.debug("onError:", cause);
+        connectionPrincipal.getOperationMessageListener().onError(cause);
     }
 
 }

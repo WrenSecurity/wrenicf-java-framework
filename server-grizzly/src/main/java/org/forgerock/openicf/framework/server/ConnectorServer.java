@@ -21,6 +21,8 @@
  * with the fields enclosed by brackets [] replaced by
  * your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
+ *
+ * Portions Copyrighted 2026 Wren Security
  */
 
 package org.forgerock.openicf.framework.server;
@@ -48,68 +50,6 @@ import org.identityconnectors.common.logging.Log;
 public class ConnectorServer {
 
     private static final Log logger = Log.getLog(ConnectorServer.class);
-
-    // @formatter:off
-    // http://docs.oracle.com/javase/8/docs/technotes/guides/security/SunProviders.html
-    public static final String[] RECOMMENDED_CIPHERS = new String[]{
-            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
-            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
-            "TLS_RSA_WITH_AES_256_CBC_SHA256",
-            "TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384",
-            "TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384",
-            "TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",
-            "TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",
-            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
-            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
-            "TLS_RSA_WITH_AES_256_CBC_SHA",
-            "TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA",
-            "TLS_ECDH_RSA_WITH_AES_256_CBC_SHA",
-            "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
-            "TLS_DHE_DSS_WITH_AES_256_CBC_SHA",
-            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",//Java7
-            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-            "TLS_RSA_WITH_AES_128_CBC_SHA256",
-            "TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256",
-            "TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256",
-            "TLS_DHE_RSA_WITH_AES_128_CBC_SHA256",
-            "TLS_DHE_DSS_WITH_AES_128_CBC_SHA256",
-            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
-            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
-            "TLS_RSA_WITH_AES_128_CBC_SHA",
-            "TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA",
-            "TLS_ECDH_RSA_WITH_AES_128_CBC_SHA",
-            "TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
-            "TLS_DHE_DSS_WITH_AES_128_CBC_SHA",
-            "TLS_ECDHE_ECDSA_WITH_RC4_128_SHA",
-            "TLS_ECDHE_RSA_WITH_RC4_128_SHA",
-            "SSL_RSA_WITH_RC4_128_SHA",
-            "TLS_ECDH_ECDSA_WITH_RC4_128_SHA",
-            "TLS_ECDH_RSA_WITH_RC4_128_SHA",
-            "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-            "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-            "TLS_RSA_WITH_AES_256_GCM_SHA384",
-            "TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384",
-            "TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384",
-            "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
-            "TLS_DHE_DSS_WITH_AES_256_GCM_SHA384",
-            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-            "TLS_RSA_WITH_AES_128_GCM_SHA256",
-            "TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256",
-            "TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256",
-            "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
-            "TLS_DHE_DSS_WITH_AES_128_GCM_SHA256",
-            "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA",
-            "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA",
-            "SSL_RSA_WITH_3DES_EDE_CBC_SHA",
-            "TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA",
-            "TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA",
-            "SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA",
-            "SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA",
-            "SSL_RSA_WITH_RC4_128_MD5",
-            "TLS_EMPTY_RENEGOTIATION_INFO_SCSVFo", // per RFC 5746
-    };
-    // @formatter:on
 
     private final AtomicInteger status = new AtomicInteger(0);
     private HttpServer server = null;
@@ -202,7 +142,7 @@ public class ConnectorServer {
             final String serverHost =
                     StringUtil.isNotBlank(host) ? host : NetworkListener.DEFAULT_NETWORK_HOST;
             final int serverPort = getServerPort(port);
-            
+
             if (null != contextConfigurator) {
                 // HTTPS
                 final String listenerName =
@@ -333,7 +273,7 @@ public class ConnectorServer {
         synchronized (status) {
             if (status.compareAndSet(1, 0)) {
                 server = null;
-                
+
                 connectorFramework.release();
                 connectorFramework = null;
             } else if (status.get() == 2) {
@@ -363,12 +303,10 @@ public class ConnectorServer {
         boolean wantClientAuth = false;
 
         SSLEngineConfigurator result =
-                new SSLEngineConfigurator(contextConfigurator.createSSLContext(), false,
+                new SSLEngineConfigurator(contextConfigurator.createSSLContext(true), false,
                         needClientAuth, wantClientAuth);
 
-        result.setEnabledCipherSuites(ConnectorServer.RECOMMENDED_CIPHERS);
-
-        result.setEnabledProtocols(new String[] { "TLSv1.2", "TLSv1.1", "TLSv1" });
+        result.setEnabledProtocols(new String[] { "TLSv1.3", "TLSv1.2" });
         return result;
     }
 

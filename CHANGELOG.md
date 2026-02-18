@@ -1,3 +1,13 @@
+# 1.5.4.0
+
+Significant dependency updates:
+
+* Commons - from 22.2.0 to 23.0.0
+* Groovy - from 2.4.21 to 5.0.4
+* Grizzly - from 2.3.35 to 4.0.2
+* Protobuf - from 3.0.2 to 3.25.8
+
+
 # 1.5.3.0
 
 Summary (more details in sections bellow):

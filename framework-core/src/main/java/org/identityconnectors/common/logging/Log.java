@@ -57,8 +57,8 @@ public final class Log {
     private static final String LOGGER_NAME = Log.class.getName();
 
     private static final Set<String> EXCLUDE_LIST = CollectionUtil.newReadOnlySet(
-            "groovy.", "org.codehaus.groovy.", "gjdk.groovy.", "java.", "javax.", "sun.",
-            "com.google.apphosting."// for GAE/J
+            "groovy.", "org.apache.groovy.", "gjdk.groovy.", "java.", "javax.", "jakarta.",
+            "sun.", "com.google.apphosting."// for GAE/J
     );
 
     /**

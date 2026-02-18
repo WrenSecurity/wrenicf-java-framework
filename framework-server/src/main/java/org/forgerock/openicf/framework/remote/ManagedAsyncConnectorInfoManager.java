@@ -34,9 +34,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.forgerock.guava.common.base.Predicate;
-import org.forgerock.guava.common.collect.FluentIterable;
 import org.forgerock.openicf.framework.async.AsyncConnectorInfoManager;
 import org.forgerock.openicf.framework.async.CloseableAsyncConnectorInfoManager;
 import org.forgerock.util.promise.Promise;
@@ -47,6 +44,8 @@ import org.identityconnectors.common.Pair;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.ConnectorInfo;
 import org.identityconnectors.framework.api.ConnectorKey;
+import org.wrensecurity.guava.common.base.Predicate;
+import org.wrensecurity.guava.common.collect.FluentIterable;
 
 /**
  * @since 1.5
@@ -62,7 +61,7 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
 
                         /**
                          * Descending ConnectorKey Comparator.
-                         * 
+                         *
                          * @param left
                          *            the first object to be compared.
                          * @param right
@@ -71,6 +70,7 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
                          *         integer as the first argument is less than,
                          *         equal to, or greater than the second.
                          */
+                        @Override
                         public int compare(final ConnectorKey left, final ConnectorKey right) {
                             int result = left.getBundleName().compareTo(right.getBundleName());
                             if (result != 0) {
@@ -94,6 +94,7 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
         CLOSED_EXCEPTION.setStackTrace(new StackTraceElement[] {});
     }
 
+    @Override
     protected void doClose() {
         for (ConnectorEntry<V> entry : managedConnectorInfos.values()) {
             entry.shutdown();
@@ -135,6 +136,7 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
                 .from(rangePromiseCacheList)
                 .filter(
                         new Predicate<Pair<ConnectorKeyRange, PromiseImpl<ConnectorInfo, RuntimeException>>>() {
+                            @Override
                             public boolean apply(Pair<ConnectorKeyRange, PromiseImpl<ConnectorInfo, RuntimeException>> value) {
                                 return value.getKey().isInRange(connectorInfo.getConnectorKey());
                             }
@@ -144,6 +146,7 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
 
     }
 
+    @Override
     public List<ConnectorInfo> getConnectorInfos() {
         ArrayList<ConnectorInfo> resultList =
                 new ArrayList<ConnectorInfo>(managedConnectorInfos.size());
@@ -155,6 +158,7 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
         return resultList;
     }
 
+    @Override
     public ConnectorInfo findConnectorInfo(ConnectorKey key) {
         ConnectorEntry<V> entry = managedConnectorInfos.get(key);
         if (null != entry) {
@@ -163,6 +167,7 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
         return null;
     }
 
+    @Override
     public Promise<ConnectorInfo, RuntimeException> findConnectorInfoAsync(
             final ConnectorKeyRange keyRange) {
         if (!isRunning.get()) {
@@ -182,6 +187,7 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
                         Pair.of(keyRange, PromiseImpl.<ConnectorInfo, RuntimeException> create());
 
                 cacheEntry.getValue().thenOnResultOrException(new Runnable() {
+                    @Override
                     public void run() {
                         rangePromiseCacheList.remove(cacheEntry);
                     }
@@ -209,6 +215,7 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
         }
     }
 
+    @Override
     public Promise<ConnectorInfo, RuntimeException> findConnectorInfoAsync(final ConnectorKey key) {
         if (!isRunning.get()) {
             return Promises.<ConnectorInfo, RuntimeException> newExceptionPromise(CLOSED_EXCEPTION);
@@ -233,20 +240,24 @@ public class ManagedAsyncConnectorInfoManager<V extends ConnectorInfo, C extends
     public AsyncConnectorInfoManager wrap() {
         return new AsyncConnectorInfoManager() {
 
+            @Override
             public Promise<ConnectorInfo, RuntimeException> findConnectorInfoAsync(
                     final ConnectorKey key) {
                 return ManagedAsyncConnectorInfoManager.this.findConnectorInfoAsync(key);
             }
 
+            @Override
             public Promise<ConnectorInfo, RuntimeException> findConnectorInfoAsync(
                     final ConnectorKeyRange keyRange) {
                 return ManagedAsyncConnectorInfoManager.this.findConnectorInfoAsync(keyRange);
             }
 
+            @Override
             public List<ConnectorInfo> getConnectorInfos() {
                 return ManagedAsyncConnectorInfoManager.this.getConnectorInfos();
             }
 
+            @Override
             public ConnectorInfo findConnectorInfo(final ConnectorKey key) {
                 return ManagedAsyncConnectorInfoManager.this.findConnectorInfo(key);
             }

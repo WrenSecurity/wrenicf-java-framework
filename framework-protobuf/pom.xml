@@ -13,7 +13,7 @@
     information: "Portions copyright [year] [name of copyright owner]".
 
     Copyright (c) 2015 ForgeRock AS. All rights reserved.
-    Portions Copyright 2017-2022 Wren Security.
+    Portions Copyright 2017-2026 Wren Security.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.wrensecurity.wrenicf.framework</groupId>
         <artifactId>connector-framework-parent</artifactId>
-        <version>1.5.3.3-SNAPSHOT</version>
+        <version>1.5.4.0-SNAPSHOT</version>
         <relativePath>../framework-parent/pom.xml</relativePath>
     </parent>
 
@@ -42,43 +42,23 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/protobuf</directory>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
-                <groupId>com.github.os72</groupId>
-                <artifactId>protoc-jar-maven-plugin</artifactId>
-                <version>3.0.0.1</version>
+                <groupId>io.github.ascopes</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>5.0.0</version>
+
+                <configuration>
+                    <protoc>${protobuf-java.version}</protoc>
+                </configuration>
+
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
-
                         <goals>
-                            <goal>run</goal>
+                            <goal>generate</goal>
                         </goals>
-
-                        <configuration>
-                            <protocVersion>3.0.0</protocVersion>
-                            <addSources>main</addSources>
-
-                            <includeDirectories>
-                                <include>src/main/java</include>
-                            </includeDirectories>
-                        </configuration>
                     </execution>
                 </executions>
-
-                <dependencies>
-                    <dependency>
-                        <groupId>com.github.os72</groupId>
-                        <artifactId>protoc-jar</artifactId>
-                        <version>3.0.0.1</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
