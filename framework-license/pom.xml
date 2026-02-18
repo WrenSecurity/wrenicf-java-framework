@@ -34,28 +34,7 @@
     </description>
 
     <build>
-        <resources>
-            <!-- Include top-level legal folder to keep things simple -->
-            <resource>
-                <directory>../legal</directory>
-                <targetPath>legal-notices</targetPath>
-            </resource>
-        </resources>
-    
         <plugins>
-            <plugin>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-
-                <executions>
-                    <execution>
-                        <?m2e execute onConfiguration?>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
