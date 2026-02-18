@@ -35,8 +35,6 @@
     </description>
 
     <properties>
-        <licenseResourceBundle>org.wrensecurity.wrenicf:license:${project.version}</licenseResourceBundle>
-
         <!-- Connector framework compatibility -->
         <framework.compatibilityVersion>1.5</framework.compatibilityVersion>
         <framework.releaseVersion>4.0</framework.releaseVersion>
@@ -233,26 +231,6 @@
                     </configuration>
                 </plugin>
 
-                <!-- We want to package up license resources in the JARs produced -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-remote-resources-plugin</artifactId>
-
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>process</goal>
-                            </goals>
-
-                            <configuration>
-                                <resourceBundles>
-                                    <resourceBundle>${licenseResourceBundle}</resourceBundle>
-                                </resourceBundles>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -312,6 +290,35 @@
                             <connectorName>${connectorName}</connectorName>
                         </systemPropertyVariables>
                     </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.wrensecurity.wrenicf</groupId>
+                            <artifactId>license</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
+
+                    <executions>
+                        <execution>
+                            <id>update-project-license</id>
+
+                            <goals>
+                                <goal>update-project-license</goal>
+                            </goals>
+
+                            <configuration>
+                                <licenseFile>${project.build.outputDirectory}/CDDLv1.1.txt</licenseFile>
+                                <licenseName>cddl_v1_1</licenseName>
+                                <licenseResolver>classpath://META-INF/wrensec-licenses</licenseResolver>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
 
                 <plugin>

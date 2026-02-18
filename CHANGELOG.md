@@ -7,6 +7,11 @@ Significant dependency updates:
 * Grizzly - from 2.3.35 to 4.0.2
 * Protobuf - from 3.0.2 to 3.25.8
 
+Change in license file fetching:
+
+* logic moved from maven-remote-resources-plugin to license-maven-plugin:
+* the license plugin needs to be defined in connector projects instead of the former one
+
 
 # 1.5.3.0
 

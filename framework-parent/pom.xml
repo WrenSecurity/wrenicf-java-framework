@@ -172,35 +172,6 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-
-                <executions>
-                    <execution>
-                        <id>legal-files</id>
-
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-
-                        <configuration>
-                            <resourceBundles>
-                                <resourceBundle>org.wrensecurity.wrenicf:license:${project.version}</resourceBundle>
-                            </resourceBundles>
-                        </configuration>
-                    </execution>
-                </executions>
-
-                <dependencies>
-                    <dependency>
-                        <groupId>org.wrensecurity.wrenicf</groupId>
-                        <artifactId>license</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
         </plugins>
     </build>
 </project>
