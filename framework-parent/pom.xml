@@ -33,7 +33,7 @@
     </description>
 
     <properties>
-        <pgpVerifyKeysVersion>1.9.8</pgpVerifyKeysVersion>
+        <pgpVerifyKeysVersion>1.9.13</pgpVerifyKeysVersion>
 
         <logback.version>1.5.32</logback.version>
         <protobuf-java.version>3.25.8</protobuf-java.version>
@@ -92,7 +92,7 @@
             <dependency>
                 <groupId>org.wrensecurity.commons</groupId>
                 <artifactId>commons-bom</artifactId>
-                <version>23.0.0-M2</version>
+                <version>23.0.0</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
