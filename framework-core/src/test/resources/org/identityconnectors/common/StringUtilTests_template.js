@@ -54,7 +54,7 @@ function doRefresh(fromButton) {
         }
         // reset the timer..
         if (!paused) {
-            setTimeout("doRefresh(false)", ${refresh.time});
+            setTimeout("doRefresh(false)", parseInt("${refresh.time}", 10));
         }
     }
 }
