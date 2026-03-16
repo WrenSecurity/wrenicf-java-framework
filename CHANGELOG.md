@@ -1,3 +1,8 @@
+# 1.5.4.1
+
+Connector bundle Maven groupId changed to `org.wrensecurity.wrenicf.connectors`.
+
+
 # 1.5.4.0
 
 Significant dependency updates:
