@@ -24,7 +24,7 @@
         <version>1.5.4.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.wrensecurity.wrenicf.connector</groupId>
+    <groupId>org.wrensecurity.wrenicf.connectors</groupId>
     <artifactId>connector-bundle-parent</artifactId>
     <packaging>pom</packaging>
 
