@@ -104,6 +104,10 @@
         <url>https://github.com/WrenSecurity/wrenicf-java-framework/issues</url>
     </issueManagement>
 
+    <properties>
+        <sonar.projectName>wrenicf-java-framework</sonar.projectName>
+    </properties>
+
     <modules>
         <module>framework-license</module>
 
